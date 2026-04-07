@@ -1,0 +1,24 @@
+html{
+    height: 100%;
+}
+body{
+    background-image: linear-gradient(86deg, #F6E1B0,#868686);
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+#pageBox{
+    justify-content: center;
+    width: 83vw;
+    height: 68vh;
+    border: solid black 10px;
+    margin-left: auto;
+    margin-right: auto;
+
+    margin-top: 12vh;
+}
+
+#skyline img{
+    position: absolute;
+    bottom: 0px;
+}

@@ -1,215 +1,173 @@
-# SCENERY – Show Your Best
+# SCENERY – Cities
 
-## Projektbezeichnung
-**SCENERY – Show Your Best**
+## Projektbezeichnung  
+**SCENERY – Cities**
 
-SCENERY ist eine Webplattform für Fotografen und Videografen, auf der Nutzer ihre besten Fotos und Videos präsentieren können.  
-Zu jedem Upload werden zusätzlich technische Informationen wie Kamera, Objektiv, Kameraeinstellungen sowie Gedanken zum Bild oder Video angegeben. Dadurch können andere Nutzer nachvollziehen, wie ein Bild oder Video entstanden ist und daraus lernen.
+SCENERY ist eine Webplattform, auf der Nutzer Städte visuell präsentieren können.  
+Zu jeder Stadt werden Bilder sowie grundlegende Informationen wie Land, Beschreibung und besondere Merkmale angezeigt.
 
-Die Plattform kombiniert eine Galerie für kreative Inhalte mit einer Lernplattform für Fotografie und Videografie.
-
-Ein zusätzlicher Bestandteil der Plattform ist **SCENERY `<CORP/>`**, ein Bereich, in dem Unternehmen kreative Challenges erstellen können. Dabei können Firmen beispielsweise nach bestimmten Fotos, Videos oder Social-Media-Inhalten suchen, die von der Community erstellt werden.
+Die Plattform kombiniert eine Galerie für visuelle Eindrücke mit einer übersichtlichen Darstellung von Städten und ihren Besonderheiten.
 
 ---
 
-# Projektauftraggeber
+# Projektauftraggeber  
 Frau Professorin **Natascha Rammelmüller**  
 Herr Professor **Robert Reder**
 
 ---
 
-# Team
+# Team  
 
 **Projektleiter und Entwickler**
 
-- Lukas Benea – Projektleitung, Entwicklung, Datenbankdesign
+- Lukas Benea – Projektleitung, Entwicklung, Datenbankdesign  
 
 ---
 
-# Projekthintergrund / Motivation
+# Projekthintergrund / Motivation  
 
-Viele bekannte Plattformen wie Instagram oder Pinterest zeigen Fotos und Videos hauptsächlich als Inspirationsquelle. Allerdings fehlen dort häufig die technischen Informationen darüber, wie diese Inhalte erstellt wurden.
+Viele Plattformen zeigen Städte hauptsächlich als einfache Bilder oder Reiseinspiration. Oft fehlen jedoch strukturierte Informationen und eine klare Übersicht.
 
-Gerade für Fotografen und Videografen sind jedoch Informationen wie Kamera, Objektiv oder Belichtungseinstellungen sehr wichtig, um von anderen Arbeiten zu lernen.
+SCENERY soll eine Plattform bieten, auf der Städte visuell dargestellt und gleichzeitig übersichtlich beschrieben werden können. Nutzer sollen schnell einen Eindruck von einer Stadt bekommen und diese mit anderen vergleichen können.
 
-SCENERY soll deshalb eine Plattform schaffen, auf der Nutzer ihre Arbeiten präsentieren können und gleichzeitig die technischen Einstellungen der Aufnahme sichtbar machen. Dadurch entsteht eine Kombination aus Galerie, Community und Lernplattform.
-
-Zusätzlich bietet die Plattform sogenannte **Challenges**, bei denen Nutzer ihre Inhalte zu bestimmten Themen einreichen und miteinander vergleichen können.
-
-Mit **SCENERY `<CORP/>`** wird dieses Konzept erweitert: Unternehmen können eigene kreative Challenges erstellen und gezielt nach Fotos, Videos oder Social-Media-Content suchen, der von der Community produziert wird.
+Durch die Kombination aus Galerie und Informationen entsteht eine moderne und leicht verständliche Plattform.
 
 ---
 
-# USP 
+# USP  
 
-SCENERY kombiniert eine Fotogalerie mit einer Lernplattform für Fotografie und Videografie.  
-Im Gegensatz zu vielen anderen Plattformen werden zu jedem Bild oder Video auch die technischen Aufnahmeinformationen angezeigt.
+SCENERY stellt Städte in einem klar strukturierten und visuell ansprechenden Grid dar.
 
-Dadurch können Nutzer nicht nur Inhalte betrachten, sondern auch verstehen, wie diese entstanden sind.
+Im Gegensatz zu klassischen Reiseplattformen liegt der Fokus nicht auf langen Texten, sondern auf einer Kombination aus:
+- Bildern  
+- kurzen Beschreibungen  
+- einfacher Navigation  
 
-Zusätzlich ermöglicht **SCENERY `<CORP/>`** Unternehmen, kreative Challenges zu erstellen und direkt mit der kreativen Community zusammenzuarbeiten.
+Dadurch können Nutzer schnell und intuitiv Städte entdecken.
 
 ---
 
-# Projektziele
+# Projektziele  
 
-Ziel des Projekts ist die Entwicklung einer Webplattform, auf der Nutzer kreative Inhalte veröffentlichen, durchsuchen und bewerten können.
+Ziel des Projekts ist die Entwicklung einer Webplattform, auf der Nutzer Städte durchsuchen und betrachten können.
 
 Die wichtigsten Funktionen der Plattform sind:
 
-- Registrierung und Login für Benutzer
-- Upload von Fotos und Videos
-- Anzeige von Kameraeinstellungen und technischen Informationen
-- Galerie mit Trending-Inhalten
-- Like-System für Beiträge
-- Tag-System zur Kategorisierung von Inhalten
-- Challenges (Rooms), in denen Nutzer Inhalte zu bestimmten Themen einreichen können
-- Unternehmens-Challenges über **SCENERY `<CORP/>`**
+- Anzeige von Städten in einer Galerie  
+- Detailansicht für jede Stadt  
+- Suchfunktion für Städte  
+- Filterung nach Tags oder Kategorien  
+- modernes Grid-Layout  
+- einfache und intuitive Benutzeroberfläche  
 
 ---
 
-# UI & UX – Sicht des Users
+# UI & UX – Sicht des Users  
 
-Die Plattform besitzt eine moderne und minimalistische Benutzeroberfläche mit Fokus auf Bildern und Videos.
+Die Plattform besitzt eine moderne und minimalistische Benutzeroberfläche mit Fokus auf Bildern.
 
-Die Startseite zeigt eine Galerie mit Trending-Inhalten und neuen Uploads.  
-Alle Inhalte werden in einem dynamischen Grid-Layout dargestellt.
+Die Hauptseite zeigt eine Galerie mit verschiedenen Städten in einem dynamischen Grid-Layout.
 
 Benutzer können:
 
-- Fotos und Videos durchsuchen
-- Inhalte liken
-- Inhalte nach Tags filtern
-- an Challenges teilnehmen
-- eigene Inhalte hochladen
+- Städte durchsuchen  
+- nach Städten suchen  
+- nach Tags filtern  
+- einzelne Städte im Detail ansehen  
 
-Beim Klick auf ein Bild oder Video öffnet sich eine Detailseite, auf der folgende Informationen sichtbar sind:
+Beim Klick auf eine Stadt öffnet sich eine Detailseite, auf der folgende Informationen sichtbar sind:
 
-- das Bild oder Video
-- Beschreibung
-- Kameraeinstellungen
-- Tags
-- Likes
+- Bild der Stadt  
+- Name der Stadt  
+- Beschreibung  
+- Tags  
 
 ---
 
-# Technologien
+# Technologien  
 
-## Frontend
-- HTML
-- CSS3
-- JavaScript
+## Frontend  
+- HTML  
+- CSS3  
+- JavaScript  
 
-## Backend
-- PHP
+## Backend  
+- PHP  
 
-## Datenbank
-- MySQL
+## Datenbank  
+- MySQL  
 
-## Tools
-- GitHub (Version Control)
-- Figma (UI Design)
+## Tools  
+- GitHub (Version Control)  
+- Figma (UI Design)  
 
 ---
 
-# Verwendete Libraries
+# Verwendete Libraries  
 
-- **GSAP** – Animationen und UI-Effekte  
 - **Masonry.js** – dynamisches Grid-Layout für die Galerie  
-- **PhotoSwipe** – Fullscreen-Anzeige von Fotos  
-- **Dropzone.js** – Drag & Drop Upload für Medien  
-- **Plyr** – moderner Video-Player
+- **PhotoSwipe** – Fullscreen-Anzeige von Bildern  
 
 ---
 
-# Feature Liste
+# Feature Liste  
 
-## User System
-- Benutzerregistrierung
-- Login und Logout
-- Benutzerprofile
+## Galerie  
+- Anzeige aller Städte in einem Grid-Layout  
+- Darstellung verschiedener Städte  
 
-## Upload System
-- Upload von Fotos und Videos
-- Titel und Beschreibung hinzufügen
-- Tags hinzufügen
-- Kameraeinstellungen angeben
+## Suche & Filter  
+- Suche nach Städtenamen  
+- Filterung nach Tags  
 
-## Galerie
-- Anzeige aller Inhalte in einem Grid-Layout
-- Trending Inhalte
-- Anzeige neuer Uploads
-
-## Like System
-- Nutzer können Inhalte liken
-- Beliebte Inhalte werden hervorgehoben
-
-## Tags
-- Inhalte können mit Tags kategorisiert werden
-- Filterung nach bestimmten Tags
-
-## Challenges (Rooms)
-- Erstellung von Challenges
-- Nutzer können Inhalte zu Challenges einreichen
-- Vergleich verschiedener Beiträge
-
-## SCENERY `<CORP/>`
-- Unternehmen können eigene Challenges erstellen
-- Firmen können kreative Inhalte von der Community anfordern
-- Nutzer können ihre Inhalte für Unternehmens-Challenges einreichen
-- Möglichkeit für kreative Kooperation zwischen Community und Unternehmen
+## Detailseite  
+- Anzeige von Bildern  
+- Beschreibung der Stadt  
+- Anzeige von Tags  
 
 ---
 
-# Coder Plan – Sicht des Entwicklers
+# Coder Plan – Sicht des Entwicklers  
 
 Das Backend der Plattform wird mit **PHP** umgesetzt und kommuniziert mit einer **MySQL-Datenbank**.
 
-Die Datenbank speichert Benutzer, Inhalte, Likes, Tags sowie Challenges.  
+Die Datenbank speichert Städte, Bilder und Tags.  
 Die Inhalte werden in einer Galerie dargestellt, die mit **Masonry.js** dynamisch aufgebaut wird.
 
-Für die Vollbildanzeige von Bildern wird **PhotoSwipe** verwendet.  
-Der Upload von Fotos und Videos erfolgt über **Dropzone.js**.  
-Videos werden mit dem **Plyr Video Player** abgespielt.
+Für die Vollbildanzeige von Bildern wird **PhotoSwipe** verwendet.
 
 ---
 
-# Datenbankkonzept
+# Datenbankkonzept  
 
 Die Plattform verwendet eine relationale MySQL-Datenbank mit folgenden Tabellen:
 
-- **users** – Benutzerinformationen  
-- **posts** – Fotos und Videos  
-- **likes** – Likes auf Beiträge  
-- **tags** – Kategorien für Inhalte  
-- **post_tags** – Verbindung zwischen Posts und Tags  
-- **rooms** – Challenges / Wettbewerbe  
-- **room_entries** – Beiträge innerhalb von Challenges  
+- **cities** – Informationen über Städte  
+- **images** – Bilder zu Städten  
+- **tags** – Kategorien  
+- **city_tags** – Verbindung zwischen Städten und Tags  
 
 ---
 
-# Zielgruppe
+# Zielgruppe  
 
 Die Plattform richtet sich an:
 
-- Hobbyfotografen
-- Videografen
-- Content Creator
-- Fotografie-Einsteiger
-- kreative Communitys
-- Unternehmen, die kreative Inhalte für Marketing oder Social Media suchen
+- Reisende  
+- Personen, die neue Städte entdecken möchten  
+- Nutzer, die sich für Städte und Orte interessieren  
 
 ---
 
-# Design Konzept
+# Design Konzept  
 
 Das Design der Plattform ist minimalistisch und modern, damit die Inhalte im Mittelpunkt stehen.
 
 Designprinzipien:
 
-- helles Interface
-- klares Grid Layout
-- Fokus auf Bilder und Videos
+- helles Interface  
+- klares Grid Layout  
+- Fokus auf Bilder  
 
 Farbschema:
 
@@ -217,25 +175,21 @@ Farbschema:
 - Karten: `#FFFFFF`  
 - Text: `#1E1E1E`  
 - Sekundärer Text: `#6B7280`  
-- Akzentfarbe: `#3B82F6`
+- Akzentfarbe: `#3B82F6`  
 
 Schriftarten:
 
-- Logo / Überschriften: **Comfortaa**
-- Text: **Nunito**
+- Logo / Überschriften: **Comfortaa**  
+- Text: **Nunito**  
 
 ---
 
-# Endergebnis
+# Endergebnis  
 
 Am Ende des Projekts soll eine funktionierende Webplattform entstehen, auf der Nutzer:
 
-- Fotos und Videos hochladen
-- Inhalte durchsuchen
-- Beiträge liken
-- Inhalte nach Tags filtern
-- an Challenges teilnehmen
+- Städte betrachten  
+- Städte durchsuchen  
+- Inhalte nach Tags filtern  
 
-Zusätzlich ermöglicht **SCENERY `<CORP/>`** Unternehmen, kreative Challenges zu erstellen und mit der Community zusammenzuarbeiten.
-
-Die Plattform soll als moderne und übersichtliche Galerie für kreative Inhalte dienen und gleichzeitig eine Möglichkeit bieten, aus den technischen Einstellungen anderer Nutzer zu lernen.
+Die Plattform dient als moderne und übersichtliche Galerie für Städte und ermöglicht eine einfache und visuelle Entdeckung verschiedener Orte.

@@ -10,11 +10,16 @@
     ?>
 </head>
 <body>
+   
     <div id="Wrapper">
+  
         <div id="pageBox">
+            <p id="title">Scenery</p>
             <img id="skyline" src="../images/skyline.png" alt="skyline">
         </div>
     </div>
-    
+           <div id="header">
+        <a href="./registration.php" id="loginBtn">Log in</a>
+    </div>
 </body>
 </html>

@@ -1,5 +1,11 @@
 html{
     height: 100%;
+    font-family: comfortaa;
+
+}
+@font-face {
+    font-family: comfortaa;
+    src: url('../static/Comfortaa-Regular.ttf');
 }
 body{
     background-image: linear-gradient(86deg, #F6E1B0,#868686);
@@ -14,11 +20,35 @@ body{
     border: solid black 10px;
     margin-left: auto;
     margin-right: auto;
-
+    
     margin-top: 12vh;
+    position: relative;
 }
 
-#skyline img{
+#skyline {
     position: absolute;
     bottom: 0px;
+    width: 83vw;
+}
+#header{
+    position: absolute;
+    top: 5vh;
+    right: 5vw;
+}
+
+#loginBtn{
+    text-decoration: none;
+    color: black;
+}
+
+#title{
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 80px;
+    letter-spacing: 10px;
+    color: transparent; 
+    -webkit-text-stroke: 2px #5c5346; 
+    font-weight: 600;
 }

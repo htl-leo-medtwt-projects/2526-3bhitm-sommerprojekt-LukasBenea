@@ -1,3 +1,77 @@
+html{
+    height: 100%;
+    font-family: comfortaa;
+
+}
 body{
     background-color: #414141;
+}
+
+
+@font-face {
+    font-family: comfortaa;
+    src: url('../static/Comfortaa-Regular.ttf');
+}
+#wrapper{
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#photoCard{
+    background-color: #d9d9d9;
+    width: 32vw;
+    height: 75vh;
+    border: 5px solid black;
+    transform: rotate(-1.5deg);
+}
+
+
+#accountIcon{
+    display: block;
+    margin: 0 auto 30px auto;
+    height: 22vh;
+}
+
+#loginBox{
+    background-color: #868686;
+    border: 5px solid black;
+    width: 23vw;
+
+    margin: 80px auto;
+    padding: 30px;
+}
+
+#klebeband{
+    position: absolute;
+    top: -7vw;
+    left: 50%;
+    transform: translateX(-50%) rotate(2deg);
+
+    width: 15vw;
+    z-index: 10;
+}
+
+.inputBox{
+    margin-bottom: 25px;
+}
+
+.inputBox p{
+    margin: 0;
+}
+
+.inputBox input{
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid black;
+    background: transparent;
+    outline: none;
+}
+
+#bottomText{
+    position: relative;
+    top: -3vh;
+    text-align: center;
 }

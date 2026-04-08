@@ -12,35 +12,37 @@
 <body>
     <div id="wrapper">
 
-    <div id="loginBox">
-
 
         <div id="photoCard">
 
-            <div id="icon">
+            <div id="loginBox">
+                
+                <img id="klebeband" src="../images/klebeband.png" alt="">    
 
-            </div>
-
-            <div class="inputBox">
-                <p>email :</p>
-                <input type="text">
-            </div>
-
-            <div class="inputBox">
-                <p>password :</p>
-                <input type="password">
-            </div>
-
-        </div>
-
-        <div id="bottomText">
-
-            <p>Don't have an account?</p>
+                <img id="accountIcon" src="../images/account_Icon.png" alt="icon">
         
 
+                <div class="inputBox">
+                    <p>email :</p>
+                    <input type="text">
+                </div>
+
+                <div class="inputBox">
+                    <p>password :</p>
+                    <input type="password">
+                </div>
+            </div>
+            
+
+            <div id="bottomText">
+                <p>Don't have an account?</p>
+            </div>
+
         </div>
 
-    </div>
+       
+
+    
 
 </div>
 </body>

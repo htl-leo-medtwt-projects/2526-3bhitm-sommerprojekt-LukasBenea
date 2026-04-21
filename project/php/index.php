@@ -1,25 +1,115 @@
+<?php
+    $loginBtn = '<a href="./registration.php" id="loginBtn">Log in</a>';
+    $infoCards = '
+        <div class="infoCard">
+            <p class="infoTitle">Discover Cities</p>
+            <p class="infoText">Explore stunning photography from cities around the world, curated by our community.</p>
+        </div>
+        <div class="infoCard">
+            <p class="infoTitle">Share Your Shots</p>
+            <p class="infoText">Upload your best city photos and let the world see your perspective.</p>
+        </div>
+        <div class="infoCard">
+            <p class="infoTitle">Tag & Filter</p>
+            <p class="infoText">Find exactly what you are looking for with our powerful tag and filter system.</p>
+        </div>
+        <div class="infoCard">
+            <p class="infoTitle">Like & Collect</p>
+            <p class="infoText">Save your favourite shots and build your personal city collection.</p>
+        </div>
+    ';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Scenery</title>
     <?php
-        echo '<link    href="../css/index.css'   . '?' . time() . '" rel="stylesheet">';
-        echo '<script  src="../js/script.js'    . '?' . time() . '" defer></script>';
+        echo '<link href="../css/index.css' . '?' . time() . '" rel="stylesheet">';
+        echo '<script src="../js/index.js' . '?' . time() . '" defer></script>';
     ?>
 </head>
 <body>
-   
-    <div id="Wrapper">
-  
-        <div id="pageBox">
-            <p id="title">Scenery</p>
-            <img id="skyline" src="../images/skyline.png" alt="skyline">
+
+    <div id="wrapper">
+
+        <div id="header">
+            <?php echo $loginBtn; ?>
         </div>
+
+        <div id="heroSection">
+
+            <div class="skylineLeft">
+                <div class="building b1"></div>
+                <div class="building b2"></div>
+                <div class="building b3"></div>
+                <div class="building b4"></div>
+                <div class="building b5"></div>
+                <div class="building b6"></div>
+                <div class="building b7"></div>
+                <div class="building b8"></div>
+                <div class="building b9"></div>
+                <div class="building b10"></div>
+                <div class="building b11"></div>
+                <div class="building b12"></div>
+                <div class="building b13"></div>
+                <div class="building b14"></div>
+                <div class="building b15"></div>
+            </div>
+
+            <div class="skylineCenter">
+                <div class="building bc1"></div>
+                <div class="building bc2"></div>
+                <div class="building bc3"></div>
+                <div class="building bc4"></div>
+                <div class="building bc5"></div>
+                <div class="building bc6"></div>
+                <div class="building bc7"></div>
+                <div class="building bc6"></div>
+                <div class="building bc5"></div>
+                <div class="building bc4"></div>
+                <div class="building bc3"></div>
+                <div class="building bc2"></div>
+                <div class="building bc1"></div>
+            </div>
+
+            <div class="skylineRight">
+                <div class="building b15"></div>
+                <div class="building b14"></div>
+                <div class="building b13"></div>
+                <div class="building b12"></div>
+                <div class="building b11"></div>
+                <div class="building b10"></div>
+                <div class="building b9"></div>
+                <div class="building b8"></div>
+                <div class="building b7"></div>
+                <div class="building b6"></div>
+                <div class="building b5"></div>
+                <div class="building b4"></div>
+                <div class="building b3"></div>
+                <div class="building b2"></div>
+                <div class="building b1"></div>
+            </div>
+
+            <div id="heroOverlay">
+                <p id="title" id="zoomTarget">Scenery</p>
+                <p id="subtitle">The city is the story</p>
+                <p id="clickHint">click to explore</p>
+            </div>
+
+        </div>
+
+        <div id="infoSection">
+            <div id="infoGrid">
+                <?php echo $infoCards; ?>
+            </div>
+        </div>
+
     </div>
-           <div id="header">
-        <a href="./registration.php" id="loginBtn">Log in</a>
-    </div>
+
+    <div id="zoomOverlay"></div>
+
 </body>
 </html>

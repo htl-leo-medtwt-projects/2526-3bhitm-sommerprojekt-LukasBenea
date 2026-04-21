@@ -17,31 +17,6 @@ html, body {
     font-family: comfortaa;
     background-color: #0a0a0a;
     color: #f0f0f0;
-    overflow-x: hidden;
-}
-
-#header {
-    position: fixed;
-    top: 30px;
-    right: 40px;
-    z-index: 100;
-}
-
-#loginBtn {
-    text-decoration: none;
-    color: #f0f0f0;
-    font-size: 13px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    border: 1px solid rgba(201, 168, 76, 0.5);
-    padding: 10px 25px;
-    border-radius: 30px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-#loginBtn:hover {
-    background-color: #c9a84c;
-    color: #0a0a0a;
 }
 
 #heroSection {
@@ -53,7 +28,6 @@ html, body {
     align-items: center;
     justify-content: center;
     background-color: #0a0a0a;
-    cursor: pointer;
 }
 
 #heroSection::before {
@@ -166,82 +140,16 @@ html, body {
 .bc6 { width: 12px; height: 35%; }
 .bc7 { width: 45px; height: 55%; }
 
-#heroOverlay {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
-
-#title {
-    font-size: 130px;
-    letter-spacing: 30px;
-    color: transparent;
-    -webkit-text-stroke: 1.5px #c9a84c;
-    font-weight: 700;
-    text-transform: uppercase;
-    animation: fadeInDown 1.2s ease forwards;
-    text-shadow: 0 0 80px rgba(201, 168, 76, 0.15);
-    transition: transform 0.3s, text-shadow 0.3s;
-}
-
-#title:hover {
-    text-shadow: 0 0 120px rgba(201, 168, 76, 0.4);
-    transform: scale(1.02);
-}
-
-#subtitle {
-    font-size: 12px;
-    color: #f0f0f0;
-    opacity: 0;
-    letter-spacing: 8px;
-    text-transform: uppercase;
-    animation: fadeInUp 1.2s ease 0.4s forwards;
-}
-
-#clickHint {
-    font-size: 11px;
-    color: #c9a84c;
-    opacity: 0;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    animation: fadeInUp 1.2s ease 0.8s forwards;
-    margin-top: 20px;
-}
-
-#zoomOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #0a0a0a;
-    z-index: 999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.6s ease;
-}
-
-#zoomOverlay.active {
-    opacity: 1;
-    pointer-events: all;
-}
-
-#infoSection {
+#gallerySection {
     width: 100vw;
     min-height: 100vh;
     background-color: #0a0a0a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 0;
+    padding: 60px 0 80px 0;
     position: relative;
+    overflow: hidden;
 }
 
-#infoSection::before {
+#gallerySection::before {
     content: '';
     position: absolute;
     width: 200%;
@@ -256,43 +164,218 @@ html, body {
     pointer-events: none;
 }
 
-#infoGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    width: 70vw;
+.skylineLeftFlipped {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: 70%;
+    z-index: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 3px;
+    padding-left: 20px;
+    opacity: 0.05;
+}
+
+.skylineCenterFlipped {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 35%;
+    z-index: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 3px;
+    opacity: 0.04;
+}
+
+.skylineRightFlipped {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 70%;
+    z-index: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 3px;
+    padding-right: 20px;
+    justify-content: flex-end;
+    opacity: 0.05;
+}
+
+.building {
+    background: linear-gradient(to bottom, #c9a84c, transparent);
+    border-radius: 0 0 2px 2px;
+    flex-shrink: 0;
+}
+
+#galleryInner {
+    width: 85vw;
+    margin: 0 auto;
     position: relative;
     z-index: 1;
 }
 
-.infoCard {
-    background-color: #111;
+#topBar {
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 14px 24px;
+    border-radius: 30px;
     border: 1px solid #222;
-    border-radius: 16px;
-    padding: 40px;
-    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-}
-
-.infoCard:hover {
-    transform: translateY(-5px);
-    border-color: #c9a84c;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-}
-
-
-.infoTitle {
-    font-size: 18px;
+    background-color: #111;
+    font-family: comfortaa;
+    font-size: 15px;
     color: #f0f0f0;
-    letter-spacing: 2px;
-    margin-bottom: 12px;
-    font-weight: 700;
+    outline: none;
+    transition: border 0.2s;
 }
 
-.infoText {
-    font-size: 13px;
+#searchInput:focus {
+    border: 1px solid #c9a84c;
+}
+
+#searchInput::placeholder {
+    color: #555;
+}
+
+#filterBar {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-size: 14px;
     color: #888;
-    line-height: 1.8;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+}
+
+#filterBtn, #addBtn {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#filterBtn:hover, #addBtn:hover {
+    color: #c9a84c;
+}
+
+#grid {
+    width: 100%;
+    margin-top: 25px;
+}
+
+.cityCard {
+    position: relative;
+    width: 30%;
+    margin-bottom: 20px;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: #111;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.cityCard:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+}
+
+.cityCard img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s;
+}
+
+.cityCard:hover img {
+    transform: scale(1.05);
+}
+
+.noImage {
+    width: 100%;
+    height: 200px;
+    background-color: #1a1a1a;
+}
+
+.cityOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+}
+
+.cityName {
+    color: #f0f0f0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.cityCountry {
+    color: #c9a84c;
+    font-size: 12px;
+    margin-top: 3px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+#heroOverlay {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15vh;
+}
+
+#title {
+    font-size: 130px;
+    letter-spacing: 30px;
+    color: transparent;
+    -webkit-text-stroke: 1.5px #c9a84c;
+    font-weight: 700;
+    text-transform: uppercase;
+    animation: fadeInDown 1.2s ease forwards;
+    text-shadow: 0 0 80px rgba(201, 168, 76, 0.15);
+}
+
+#subtitle {
+    font-size: 12px;
+    color: #f0f0f0;
+    opacity: 0;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    animation: fadeInUp 1.2s ease 0.4s forwards;
+}
+
+#scrollBtn {
+    margin-top: 40px;
+    color: #c9a84c;
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    border: 1px solid rgba(201, 168, 76, 0.5);
+    padding: 14px 35px;
+    border-radius: 30px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    opacity: 0;
+    animation: fadeInUp 1.2s ease 0.8s forwards;
+}
+
+#scrollBtn:hover {
+    background-color: #c9a84c;
+    color: #0a0a0a;
+    border-color: #c9a84c;
 }
 
 @keyframes fadeInDown {

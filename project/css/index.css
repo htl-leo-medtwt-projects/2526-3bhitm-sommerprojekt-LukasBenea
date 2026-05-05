@@ -20,28 +20,77 @@ html, body {
     overflow-x: hidden;
 }
 
-#header {
+#navbar {
     position: fixed;
-    top: 30px;
-    right: 40px;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8vw;
     z-index: 100;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.9), transparent);
+    backdrop-filter: blur(10px);
 }
 
-#loginBtn {
+#navLogo {
     text-decoration: none;
-    color: #f0f0f0;
-    font-size: 13px;
-    letter-spacing: 3px;
+    font-size: 18px;
+    letter-spacing: 6px;
+    color: transparent;
+    -webkit-text-stroke: 1px #c9a84c;
     text-transform: uppercase;
-    border: 1px solid rgba(201, 168, 76, 0.5);
-    padding: 10px 25px;
-    border-radius: 30px;
-    transition: background-color 0.3s, color 0.3s;
+    font-weight: 700;
+    transition: opacity 0.2s;
 }
 
-#loginBtn:hover {
-    background-color: #c9a84c;
-    color: #0a0a0a;
+#navLogo:hover {
+    opacity: 0.7;
+}
+
+#navRight {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+#navLogin {
+    color: #888;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+#navLogin:hover {
+    color: #c9a84c;
+}
+
+#navProfile img {
+    width: 30px;
+    height: 30px;
+    opacity: 0.7;
+    filter: invert(1);
+    transition: opacity 0.2s;
+}
+
+#navProfile:hover img {
+    opacity: 1;
+}
+
+#navLogout {
+    color: #888;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+#navLogout:hover {
+    color: #e74c3c;
 }
 
 #heroSection {
@@ -61,7 +110,7 @@ html, body {
     position: absolute;
     width: 200%;
     height: 200%;
-    background-image: 
+    background-image:
         linear-gradient(rgba(201, 168, 76, 0.06) 1px, transparent 1px),
         linear-gradient(90deg, rgba(201, 168, 76, 0.06) 1px, transparent 1px);
     background-size: 60px 60px;
@@ -248,7 +297,7 @@ html, body {
     height: 200%;
     top: 0;
     left: 0;
-    background-image: 
+    background-image:
         linear-gradient(rgba(201, 168, 76, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(201, 168, 76, 0.03) 1px, transparent 1px);
     background-size: 60px 60px;
@@ -278,7 +327,6 @@ html, body {
     border-color: #c9a84c;
     box-shadow: 0 15px 35px rgba(0,0,0,0.5);
 }
-
 
 .infoTitle {
     font-size: 18px;

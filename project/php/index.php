@@ -1,23 +1,33 @@
 <?php
-    $loginBtn = '<a href="./registration.php" id="loginBtn">Log in</a>';
-    $infoCards = '
-        <div class="infoCard">
-            <p class="infoTitle">Discover Cities</p>
-            <p class="infoText">Explore stunning photography from cities around the world, curated by our community.</p>
-        </div>
-        <div class="infoCard">
-            <p class="infoTitle">Share Your Shots</p>
-            <p class="infoText">Upload your best city photos and let the world see your perspective.</p>
-        </div>
-        <div class="infoCard">
-            <p class="infoTitle">Tag & Filter</p>
-            <p class="infoText">Find exactly what you are looking for with our powerful tag and filter system.</p>
-        </div>
-        <div class="infoCard">
-            <p class="infoTitle">Like & Collect</p>
-            <p class="infoText">Save your favourite shots and build your personal city collection.</p>
-        </div>
-    ';
+
+session_start();
+
+$isLoggedIn = isset($_SESSION['login']) && $_SESSION['login'] === 1;
+
+$navRight = $isLoggedIn
+    ? '<a href="profile.php" id="navProfile"><img src="../images/account_Icon.png" alt="account"></a>
+       <a href="logout.php" id="navLogout">Logout</a>'
+    : '<a href="./registration.php" id="navLogin">Log in</a>';
+
+$infoCards = '
+    <div class="infoCard">
+        <p class="infoTitle">Discover Cities</p>
+        <p class="infoText">Explore stunning photography from cities around the world, curated by our community.</p>
+    </div>
+    <div class="infoCard">
+        <p class="infoTitle">Share Your Shots</p>
+        <p class="infoText">Upload your best city photos and let the world see your perspective.</p>
+    </div>
+    <div class="infoCard">
+        <p class="infoTitle">Tag & Filter</p>
+        <p class="infoText">Find exactly what you are looking for with our powerful tag and filter system.</p>
+    </div>
+    <div class="infoCard">
+        <p class="infoTitle">Like & Collect</p>
+        <p class="infoText">Save your favourite shots and build your personal city collection.</p>
+    </div>
+';
+
 ?>
 
 <!DOCTYPE html>
@@ -35,8 +45,11 @@
 
     <div id="wrapper">
 
-        <div id="header">
-            <?php echo $loginBtn; ?>
+        <div id="navbar">
+            <a href="index.php" id="navLogo">Scenery</a>
+            <div id="navRight">
+                <?php echo $navRight; ?>
+            </div>
         </div>
 
         <div id="heroSection">
@@ -94,7 +107,7 @@
             </div>
 
             <div id="heroOverlay">
-                <p id="title" id="zoomTarget">Scenery</p>
+                <p id="title">Scenery</p>
                 <p id="subtitle">The city is the story</p>
                 <p id="clickHint">click to explore</p>
             </div>

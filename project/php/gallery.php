@@ -1,28 +1,30 @@
 <?php
-    require_once "mysql.php";
 
-    $sql = "SELECT * FROM cities";
-    $result = $conn->query($sql);
-    $cities = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    $conn->close();
+session_start();
+require_once "mysql.php";
 
-    $cityCards = "";
-    foreach ($cities as $city) {
-        $img = !empty($city['hero_image']) 
-            ? '<img src="../images/' . $city['hero_image'] . '" alt="' . $city['name'] . '">'
-            : '<div class="noImage"></div>';
+$sql = "SELECT * FROM cities";
+$result = $conn->query($sql);
+$cities = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$conn->close();
 
-        $cityCards .= '<a href="city.php?id='
-            . $city['id'] 
-            . '" class="cityCard">
+$cityCards = "";
+foreach ($cities as $city) {
+    $img = !empty($city['hero_image'])
+        ? '<img src="../images/' . $city['hero_image'] . '" alt="' . $city['name'] . '">'
+        : '<div class="noImage"></div>';
+
+    $cityCards .= '
+        <a href="city.php?id=' . $city['id'] . '" class="cityCard">
             ' . $img . '
-                <div class="cityOverlay">
-                    <p class="cityName">' . $city['name'] . '</p>
-                    <p class="cityCountry">' . $city['country'] . '</p>
-                </div>
-            </a>
-        ';
-    }
+            <div class="cityOverlay">
+                <p class="cityName">' . $city['name'] . '</p>
+                <p class="cityCountry">' . $city['country'] . '</p>
+            </div>
+        </a>
+    ';
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -31,15 +33,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scenery</title>
-   <?php
-    echo '<link href="../css/gallery.css' . '?' . time() . '" rel="stylesheet">';
-    echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>';
-    echo '<script src="../js/script.js' . '?' . time() . '" defer></script>';
-?>
+    <?php
+        echo '<link href="../css/gallery.css' . '?' . time() . '" rel="stylesheet">';
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>';
+        echo '<script src="../js/script.js' . '?' . time() . '" defer></script>';
+    ?>
 </head>
 <body>
 
     <div id="wrapper">
+
+        <div id="navbar">
+            <a href="index.php" id="navLogo">Scenery</a>
+            <div id="navRight">
+                <a href="index.php" id="navHome">Home</a>
+                <a href="profile.php" id="navProfile">
+                    <img src="../images/account_Icon.png" alt="account">
+                </a>
+                <a href="logout.php" id="navLogout">Logout</a>
+            </div>
+        </div>
 
         <div id="heroSection">
 
@@ -98,7 +111,7 @@
             <div id="heroOverlay">
                 <p id="title">Scenery</p>
                 <p id="subtitle">View cities in their best below</p>
-                <a href="#gallerySection" id="scrollBtn">↓ Explore</a>
+                <a href="#gallerySection" id="scrollBtn">Explore</a>
             </div>
 
         </div>

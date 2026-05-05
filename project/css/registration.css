@@ -10,10 +10,10 @@
 }
 
 html, body {
-    height: 100%;
     font-family: comfortaa;
     background-color: #0f0f0f;
     color: #f0f0f0;
+    min-height: 100%;
 }
 
 body {
@@ -24,7 +24,6 @@ body {
     background-image: radial-gradient(ellipse at top, #1a1500 0%, #0f0f0f 70%);
 }
 
-/* LOGO */
 #logoLink {
     position: fixed;
     top: 30px;
@@ -43,7 +42,6 @@ body {
     opacity: 0.7;
 }
 
-/* WRAPPER */
 #wrapper {
     display: flex;
     justify-content: center;
@@ -52,7 +50,6 @@ body {
     min-height: 100vh;
 }
 
-/* PHOTO CARD */
 #photoCard {
     background-color: #1a1a1a;
     width: 380px;
@@ -66,7 +63,7 @@ body {
 
 #klebeband {
     position: absolute;
-    top: -60px;  
+    top: -60px;
     left: 50%;
     transform: translateX(-50%) rotate(2deg);
     width: 120px;
@@ -83,7 +80,6 @@ body {
 }
 
 .tab {
-    text-decoration: none;
     font-size: 13px;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -91,6 +87,7 @@ body {
     padding-bottom: 5px;
     border-bottom: 2px solid transparent;
     transition: color 0.2s, border-color 0.2s;
+    cursor: pointer;
 }
 
 .tab.active {
@@ -188,7 +185,6 @@ body {
     background-color: rgba(107,255,184,0.1);
 }
 
-/* BOTTOM TEXT */
 #bottomText {
     text-align: center;
     margin-top: 20px;

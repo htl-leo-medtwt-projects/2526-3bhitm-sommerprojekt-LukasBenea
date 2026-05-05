@@ -1,58 +1,85 @@
 <?php
-    require_once "mysql.php";
 
-    $city_id = $_GET['id'];
+session_start();
+require_once "mysql.php";
 
-    $stmt = $conn->prepare("SELECT * FROM cities WHERE id = ?");
-    $stmt->bind_param("i", $city_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $city = $result->fetch_assoc();
+$city_id = $_GET['id'];
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
-    $stmt2 = $conn->prepare("SELECT * FROM photos WHERE city_id = ?");
-    $stmt2->bind_param("i", $city_id);
-    $stmt2->execute();
-    $result2 = $stmt2->get_result();
-    $photos = mysqli_fetch_all($result2, MYSQLI_ASSOC);
+$stmt = $conn->prepare("SELECT * FROM cities WHERE id = ?");
+$stmt->bind_param("i", $city_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$city = $result->fetch_assoc();
 
-    $conn->close();
+$stmt2 = $conn->prepare("SELECT * FROM photos WHERE city_id = ?");
+$stmt2->bind_param("i", $city_id);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
+$photos = mysqli_fetch_all($result2, MYSQLI_ASSOC);
 
-    $heroImg = !empty($city['hero_image'])
-        ? '<img src="../images/' . $city['hero_image'] . '" alt="' . $city['name'] . '">'
-        : '<div class="noImage"></div>';
+$likedPhotoIds = [];
+if ($user_id > 0) {
+    $stmt3 = $conn->prepare("SELECT photo_id FROM likes WHERE user_id = ?");
+    $stmt3->bind_param("i", $user_id);
+    $stmt3->execute();
+    $result3 = $stmt3->get_result();
+    $likedRows = mysqli_fetch_all($result3, MYSQLI_ASSOC);
+    foreach ($likedRows as $row) {
+        $likedPhotoIds[] = $row['photo_id'];
+    }
+}
 
-    $metaBoxes = '
-        <div class="metaBox">
-            <p class="metaLabel">Country</p>
-            <p class="metaValue">' . $city['country'] . '</p>
-        </div>
-        <div class="metaBox">
-            <p class="metaLabel">Continent</p>
-            <p class="metaValue">' . $city['continent'] . '</p>
-        </div>
-        <div class="metaBox">
-            <p class="metaLabel">Population</p>
-            <p class="metaValue">' . number_format($city['population']) . '</p>
-        </div>
-        <div class="metaBox">
-            <p class="metaLabel">Photos</p>
-            <p class="metaValue">' . count($photos) . '</p>
-        </div>
-    ';
+$conn->close();
 
-    $photoCards = "";
-    foreach ($photos as $photo) {
-        $photoCards .= '
-            <div class="photoCard" onclick="openModal(' . $photo['id'] . ')">
-                <img src="../images/' . $photo['image_path'] . '" alt="' . $photo['title'] . '">
-                <div class="photoOverlay">
-                    <p class="photoTitle">' . $photo['title'] . '</p>
+$heroImg = !empty($city['hero_image'])
+    ? '<img src="../images/' . $city['hero_image'] . '" alt="' . $city['name'] . '">'
+    : '<div class="noImage"></div>';
+
+$metaBoxes = '
+    <div class="metaBox">
+        <p class="metaLabel">Country</p>
+        <p class="metaValue">' . $city['country'] . '</p>
+    </div>
+    <div class="metaBox">
+        <p class="metaLabel">Continent</p>
+        <p class="metaValue">' . $city['continent'] . '</p>
+    </div>
+    <div class="metaBox">
+        <p class="metaLabel">Population</p>
+        <p class="metaValue">' . number_format($city['population']) . '</p>
+    </div>
+    <div class="metaBox">
+        <p class="metaLabel">Photos</p>
+        <p class="metaValue">' . count($photos) . '</p>
+    </div>
+';
+
+$photoCards = "";
+foreach ($photos as $photo) {
+    $isLiked = in_array($photo['id'], $likedPhotoIds);
+    $heartClass = $isLiked ? 'fa-solid fa-heart liked' : 'fa-regular fa-heart';
+    $photoCards .= '
+        <div class="photoCard" onclick="openModal(' . $photo['id'] . ')">
+            <img src="../images/' . $photo['image_path'] . '" alt="' . $photo['title'] . '">
+            <div class="photoOverlay">
+                <p class="photoTitle">' . $photo['title'] . '</p>
+            </div>
+            <div class="cardBtns">
+                <div class="likeBtn" onclick="toggleLike(event, ' . $photo['id'] . ', this)">
+                    <i class="' . $heartClass . '"></i>
+                </div>
+                <div class="collectBtn" onclick="openCollectionModal(event, ' . $photo['id'] . ')">
+                    <i class="fa-regular fa-bookmark"></i>
                 </div>
             </div>
-        ';
-    }
+        </div>
+    ';
+}
 
-    $photosJson = json_encode($photos);
+$photosJson = json_encode($photos);
+$likedJson = json_encode($likedPhotoIds);
+
 ?>
 
 <!DOCTYPE html>
@@ -62,6 +89,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scenery – <?php echo $city['name']; ?></title>
     <?php
+        echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">';
         echo '<link href="../css/city.css' . '?' . time() . '" rel="stylesheet">';
         echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>';
         echo '<script src="../js/script.js' . '?' . time() . '" defer></script>';
@@ -71,7 +99,26 @@
 
     <div id="wrapper">
 
-        <a href="gallery.php" id="backBtn">Back to Gallery</a>
+        <div id="navbar">
+            <a href="index.php" id="navLogo">Scenery</a>
+            <div id="navRight">
+                <a href="javascript:history.back()" id="navBack">Back</a>
+                <?php
+                if ($user_id > 0) {
+                ?>
+                    <a href="profile.php" id="navProfile">
+                        <img src="../images/account_Icon.png" alt="account">
+                    </a>
+                    <a href="logout.php" id="navLogout">Logout</a>
+                <?php
+                } else {
+                ?>
+                    <a href="registration.php" id="navLogin">Login</a>
+                <?php
+                }
+                ?>
+            </div>
+        </div>
 
         <div id="cityHero">
             <?php echo $heroImg; ?>
@@ -113,6 +160,10 @@
                     <h2 id="modalTitle"></h2>
                     <p id="modalDesc"></p>
                     <p id="modalTags"></p>
+                    <div id="modalLikeBtn" onclick="toggleLikeModal(this)">
+                        <i id="modalLikeIcon" class="fa-regular fa-heart"></i>
+                        <span id="modalLikeText">Like</span>
+                    </div>
                     <div id="modalExif">
                         <p class="exifRow" id="exifCamera"></p>
                         <p class="exifRow" id="exifFocal"></p>
@@ -127,8 +178,19 @@
         </div>
     </div>
 
+    <div id="collectionModal" class="hidden">
+        <div id="collectionOverlay" onclick="closeCollectionModal()"></div>
+        <div id="collectionBox">
+            <span id="collectionClose" onclick="closeCollectionModal()">✕</span>
+            <h2 id="collectionTitle">Add to Collection</h2>
+            <input type="text" id="collectionSearch" placeholder="Search or create collection...">
+            <div id="collectionResults"></div>
+        </div>
+    </div>
+
     <script>
         <?php echo 'const photos = ' . $photosJson . ';'; ?>
+        <?php echo 'let likedPhotos = ' . $likedJson . ';'; ?>
     </script>
 
 </body>

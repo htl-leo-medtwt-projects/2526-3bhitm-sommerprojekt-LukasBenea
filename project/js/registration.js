@@ -2,7 +2,6 @@ let loginTab = document.getElementById('loginTab');
 let registerTab = document.getElementById('registerTab');
 let submitBtn = document.getElementById('submitBtn');
 let modeInput = document.querySelector('input[name="mode"]');
-let form = document.getElementById('form');
 
 loginTab.addEventListener('click', function() {
     modeInput.value = 'login';

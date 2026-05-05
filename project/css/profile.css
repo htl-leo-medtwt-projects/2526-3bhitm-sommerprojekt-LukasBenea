@@ -1,0 +1,641 @@
+@font-face {
+    font-family: comfortaa;
+    src: url('../font/Comfortaa-Regular.ttf');
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    font-family: comfortaa;
+    background-color: #0a0a0a;
+    color: #f0f0f0;
+}
+
+#navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8vw;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+    backdrop-filter: blur(10px);
+}
+
+#navLogo {
+    text-decoration: none;
+    font-size: 18px;
+    letter-spacing: 6px;
+    color: transparent;
+    -webkit-text-stroke: 1px #c9a84c;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: opacity 0.2s;
+}
+
+#navLogo:hover {
+    opacity: 0.7;
+}
+
+#navRight {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+#navBack {
+    color: #888;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+#navBack:hover {
+    color: #c9a84c;
+}
+
+#navLogout {
+    color: #888;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+#navLogout:hover {
+    color: #e74c3c;
+}
+
+#coverSection {
+    width: 100%;
+    height: 35vh;
+    position: relative;
+    overflow: hidden;
+    margin-top: 70px;
+    background: linear-gradient(135deg, #111 0%, #1a1a00 50%, #111 100%);
+}
+
+#coverSection::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background-image:
+        linear-gradient(rgba(201, 168, 76, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201, 168, 76, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 0;
+}
+
+#coverImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5);
+    position: relative;
+    z-index: 1;
+}
+
+#coverOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(transparent, #0a0a0a);
+    z-index: 2;
+}
+
+#profileSection {
+    width: 85vw;
+    margin: 0 auto;
+    position: relative;
+}
+
+#profileHeader {
+    display: flex;
+    align-items: flex-end;
+    gap: 30px;
+    margin-top: -60px;
+    position: relative;
+    z-index: 2;
+}
+
+#avatarBox {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #c9a84c;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: #111;
+}
+
+#avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#avatarPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #c9a84c;
+    font-weight: 700;
+    background-color: #111;
+}
+
+#profileInfo {
+    padding-bottom: 10px;
+}
+
+#profileUsername {
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: #f0f0f0;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+#profileBio {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+}
+
+#profileJoined {
+    font-size: 11px;
+    color: #c9a84c;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+#statsBar {
+    display: flex;
+    gap: 15px;
+    margin-top: 35px;
+    margin-bottom: 50px;
+}
+
+.statBox {
+    background-color: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 20px 30px;
+    text-align: center;
+    flex: 1;
+    transition: border-color 0.2s;
+}
+
+.statBox:hover {
+    border-color: #c9a84c;
+}
+
+.statValue {
+    font-size: 28px;
+    font-weight: 700;
+    color: #c9a84c;
+    margin-bottom: 5px;
+}
+
+.statLabel {
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+#contentSection {
+    width: 85vw;
+    margin: 0 auto 80px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.contentBlock {
+    position: relative;
+}
+
+.blockTitle {
+    font-size: 16px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #f0f0f0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #222;
+}
+
+.emptyMsg {
+    font-size: 13px;
+    color: #555;
+    letter-spacing: 1px;
+}
+
+.photoGrid {
+    width: 100%;
+}
+
+.photoCard {
+    position: relative;
+    width: 30%;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: #111;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.photoCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+}
+
+.photoCard img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s;
+}
+
+.photoCard:hover img {
+    transform: scale(1.05);
+}
+
+.photoOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.photoCard:hover .photoOverlay {
+    opacity: 1;
+}
+
+.photoTitle {
+    color: #f0f0f0;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.collectionGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.collectionCard {
+    position: relative;
+    background-color: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 25px;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+.collectionCard:hover {
+    border-color: #c9a84c;
+    transform: translateY(-4px);
+}
+
+.collectionName {
+    font-size: 15px;
+    color: #f0f0f0;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.collectionDesc {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.6;
+}
+
+.deleteCollectionBtn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s;
+}
+
+.deleteCollectionBtn:hover {
+    color: #e74c3c;
+}
+
+.visitedGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.visitedCard {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    background-color: #111;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.visitedCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.visitedCard img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6);
+    transition: transform 0.4s;
+}
+
+.visitedCard:hover img {
+    transform: scale(1.05);
+}
+
+.visitedOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+}
+
+.visitedName {
+    color: #f0f0f0;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.visitedCountry {
+    color: #c9a84c;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 3px;
+}
+
+.hidden {
+    display: none;
+}
+
+#collectionOverlayModal, #photoDetailModal, #deleteModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+#collectionOverlayModal, #photoDetailModal {
+    z-index: 200;
+}
+
+#deleteModal {
+    z-index: 300;
+}
+
+#collectionOverlayBg, #photoDetailOverlay, #deleteOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#collectionOverlayBg, #photoDetailOverlay {
+    background-color: rgba(0,0,0,0.9);
+}
+
+#deleteOverlay {
+    background-color: rgba(0,0,0,0.85);
+}
+
+#collectionOverlayBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border-radius: 20px;
+    width: 80vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    z-index: 201;
+    border: 1px solid #333;
+    padding: 40px;
+}
+
+#collectionOverlayClose, #photoDetailClose {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    color: #888;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+#collectionOverlayClose:hover, #photoDetailClose:hover {
+    color: #c9a84c;
+}
+
+#collectionOverlayTitle {
+    font-size: 20px;
+    color: #f0f0f0;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+}
+
+#collectionOverlayGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.collectionPhotoCard {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 4/3;
+    background-color: #111;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.collectionPhotoCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.collectionPhotoCard img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+}
+
+.collectionPhotoCard:hover img {
+    transform: scale(1.05);
+}
+
+#photoDetailBox, #deleteBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+}
+
+#photoDetailBox {
+    border-radius: 20px;
+    width: 80vw;
+    max-height: 85vh;
+    overflow: hidden;
+    z-index: 201;
+}
+
+#deleteBox {
+    border-radius: 16px;
+    width: 350px;
+    padding: 35px;
+    z-index: 301;
+    text-align: center;
+}
+
+#photoDetailContent {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    height: 85vh;
+}
+
+#photoDetailLeft {
+    overflow: hidden;
+}
+
+#photoDetailImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px 0 0 20px;
+}
+
+#photoDetailRight {
+    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#photoDetailTitle {
+    font-size: 22px;
+    color: #f0f0f0;
+    letter-spacing: 2px;
+}
+
+#photoDetailDesc {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.7;
+}
+
+#photoDetailExif {
+    border-top: 1px solid #333;
+    padding-top: 15px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#photoDetailExif .exifRow {
+    font-size: 12px;
+    color: #888;
+    letter-spacing: 0.5px;
+}
+
+#deleteTitle {
+    font-size: 18px;
+    color: #f0f0f0;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+#deleteText {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+#deleteBtns {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+#deleteCancelBtn, #deleteConfirmBtn {
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+#deleteCancelBtn {
+    border: 1px solid #333;
+    color: #888;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+#deleteCancelBtn:hover {
+    border-color: #f0f0f0;
+    color: #f0f0f0;
+}
+
+#deleteConfirmBtn {
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#deleteConfirmBtn:hover {
+    background-color: #e74c3c;
+    color: #f0f0f0;
+}

@@ -39,6 +39,9 @@ $infoCards = '
     <?php
         echo '<link href="../css/index.css' . '?' . time() . '" rel="stylesheet">';
         echo '<script src="../js/index.js' . '?' . time() . '" defer></script>';
+        echo '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">';
+        echo '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>';
+        echo '<script src="../js/map.js' . '?' . time() . '" defer></script>';
     ?>
 </head>
 <body>
@@ -117,6 +120,14 @@ $infoCards = '
         <div id="infoSection">
             <div id="infoGrid">
                 <?php echo $infoCards; ?>
+            </div>
+        </div>
+
+        <div id="mapSection">
+            <div id="mapInner">
+                <p id="mapTitle">Cities Around The World</p>
+                <p id="mapSubtitle">See where our community has been</p>
+                <div id="map"></div>
             </div>
         </div>
 

@@ -30,6 +30,16 @@ if ($user_id > 0) {
     }
 }
 
+$isVisited = false;
+if ($user_id > 0) {
+    $stmt4 = $conn->prepare("SELECT id FROM visited_cities WHERE user_id = ? AND city_id = ?");
+    $stmt4->bind_param("ii", $user_id, $city_id);
+    $stmt4->execute();
+    $result4 = $stmt4->get_result();
+    if ($result4->fetch_assoc()) {
+        $isVisited = true;
+    }
+}
 $conn->close();
 
 $heroImg = !empty($city['hero_image'])
@@ -126,6 +136,16 @@ $likedJson = json_encode($likedPhotoIds);
                 <p id="cityContinent"><?php echo $city['continent']; ?></p>
                 <h1 id="cityTitle"><?php echo $city['name']; ?></h1>
                 <p id="cityCountry"><?php echo $city['country']; ?></p>
+                <?php
+                if ($user_id > 0) {
+                ?>
+                    <div id="visitBtn" class="<?php echo $isVisited ? 'visited' : ''; ?>" onclick="toggleVisit(<?php echo $city_id; ?>)">
+                        <i class="<?php echo $isVisited ? 'fa-solid fa-location-dot' : 'fa-solid fa-location-dot'; ?>"></i>
+                        <span id="visitText"><?php echo $isVisited ? "I've been here" : "Mark as visited"; ?></span>
+                    </div>
+                <?php
+                }
+                ?>
             </div>
         </div>
 

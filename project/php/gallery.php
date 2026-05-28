@@ -3,9 +3,15 @@
 session_start();
 require_once "mysql.php";
 
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
+
 $sql = "SELECT * FROM cities";
 $result = $conn->query($sql);
 $cities = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+$tagsResult = $conn->query("SELECT * FROM tags ORDER BY name");
+$tags = mysqli_fetch_all($tagsResult, MYSQLI_ASSOC);
+
 $conn->close();
 
 $cityCards = "";
@@ -25,6 +31,13 @@ foreach ($cities as $city) {
     ';
 }
 
+$tagButtons = '';
+foreach ($tags as $tag) {
+    $tagButtons .= '<span class="tagBtn" data-tag="' . $tag['name'] . '">' . $tag['name'] . '</span>';
+}
+
+$citiesJson = json_encode($cities);
+
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +47,7 @@ foreach ($cities as $city) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scenery</title>
     <?php
+        echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">';
         echo '<link href="../css/gallery.css' . '?' . time() . '" rel="stylesheet">';
         echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>';
         echo '<script src="../js/script.js' . '?' . time() . '" defer></script>';
@@ -171,21 +185,92 @@ foreach ($cities as $city) {
             </div>
 
             <div id="galleryInner">
-                <div id="topBar">
-                    <input type="text" id="searchInput" placeholder="Search ...">
-                    <div id="filterBar">
-                        <span id="filterBtn">Filter</span>
-                        <span id="addBtn">+ Add</span>
+
+                <div id="viewSwitch">
+                    <span class="switchBtn active" id="citiesBtn" onclick="switchView('cities')">Cities</span>
+                    <span class="switchBtn" id="photosBtn" onclick="switchView('photos')">Photos</span>
+                </div>
+
+                <div id="citiesView">
+                    <div id="topBar">
+                        <input type="text" id="searchInput" placeholder="Search cities or countries...">
+                        <?php
+                        if ($user_id > 0) {
+                        ?>
+                            <span id="addBtn" onclick="openUploadModal()">+ Add Photo</span>
+                        <?php
+                        }
+                        ?>
+                    </div>
+                    <div id="grid" data-masonry='{"itemSelector": ".cityCard", "columnWidth": ".cityCard", "gutter": 20}'>
+                        <?php echo $cityCards; ?>
                     </div>
                 </div>
-                <div id="grid" data-masonry='{"itemSelector": ".cityCard", "columnWidth": ".cityCard", "gutter": 20}'>
-                    <?php echo $cityCards; ?>
+
+                <div id="photosView" class="hidden">
+                    <div id="photosTopBar">
+                        <input type="text" id="photoSearchInput" placeholder="Search photos...">
+                        <div id="tagsBar">
+                            <span class="tagBtn active" data-tag="">All</span>
+                            <?php echo $tagButtons; ?>
+                        </div>
+                    </div>
+                    <div id="photosGrid" data-masonry='{"itemSelector": ".galleryPhotoCard", "columnWidth": ".galleryPhotoCard", "gutter": 15}'></div>
                 </div>
+
             </div>
 
         </div>
 
     </div>
+
+    <?php
+    if ($user_id > 0) {
+    ?>
+    <div id="uploadModal" class="hidden">
+        <div id="uploadOverlay" onclick="closeUploadModal()"></div>
+        <div id="uploadBox">
+            <span id="uploadClose" onclick="closeUploadModal()">✕</span>
+            <h2 id="uploadTitle">Upload Photo</h2>
+            <div id="uploadForm">
+                <div id="uploadDropzone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p>Click or drag to upload</p>
+                    <input type="file" id="fileInput" accept="image/*" style="display:none">
+                </div>
+                <img id="uploadPreview" src="" alt="" class="hidden">
+                <input type="text" id="uploadTitle_input" placeholder="Title">
+                <input type="text" id="uploadDesc" placeholder="Description (optional)">
+                <select id="uploadCity">
+                    <option value="">Select city...</option>
+                    <?php
+                    foreach ($cities as $city) {
+                    ?>
+                        <option value="<?php echo $city['id']; ?>"><?php echo $city['name']; ?></option>
+                    <?php
+                    }
+                    ?>
+                </select>
+                <div id="uploadTags">
+                    <?php
+                    foreach ($tags as $tag) {
+                    ?>
+                        <span class="uploadTagBtn" data-id="<?php echo $tag['id']; ?>"><?php echo $tag['name']; ?></span>
+                    <?php
+                    }
+                    ?>
+                </div>
+                <button id="uploadSubmitBtn" onclick="submitUpload()">Upload</button>
+            </div>
+        </div>
+    </div>
+    <?php
+    }
+    ?>
+
+    <script>
+        <?php echo 'const cities = ' . $citiesJson . ';'; ?>
+    </script>
 
 </body>
 </html>

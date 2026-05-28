@@ -256,6 +256,7 @@ function deleteCollection(event, collectionId) {
     };
 }
 
+
 function closeDeleteModal() {
     document.getElementById('deleteModal').classList.add('hidden');
     collectionToDelete = null;
@@ -270,17 +271,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    var galleryGrid = document.getElementById('grid');
+    let galleryGrid = document.getElementById('grid');
     if (galleryGrid) {
-        var msnryGallery = new Masonry(galleryGrid, {
+        let msnryGallery = new Masonry(galleryGrid, {
             itemSelector: '.cityCard',
             columnWidth: '.cityCard',
             gutter: 20,
             percentPosition: true
         });
 
-        var imgs = galleryGrid.querySelectorAll('img');
-        var loaded = 0;
+        let imgs = galleryGrid.querySelectorAll('img');
+        let loaded = 0;
         imgs.forEach(function(img) {
             img.addEventListener('load', function() {
                 loaded++;
@@ -289,17 +290,289 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    var photosGrid = document.getElementById('photosGrid');
+    let photosGrid = document.getElementById('photosGrid');
     if (photosGrid) {
-        var msnryPhotos = new Masonry(photosGrid, {
+        let msnryPhotos = new Masonry(photosGrid, {
             itemSelector: '.photoCard',
             columnWidth: '.photoCard',
             gutter: 15,
             percentPosition: true
         });
 
-        var imgs2 = photosGrid.querySelectorAll('img');
-        var loaded2 = 0;
+        let imgs2 = photosGrid.querySelectorAll('img');
+        let loaded2 = 0;
+        imgs2.forEach(function(img) {
+            img.addEventListener('load', function() {
+                loaded2++;
+                if (loaded2 === imgs2.length) msnryPhotos.layout();
+            });
+        });
+    }
+
+});
+
+
+function toggleVisit(cityId) {
+    fetch('../php/visitCity.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'city_id=' + cityId
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        let btn = document.getElementById('visitBtn');
+        let icon = btn.querySelector('i');
+        let text = document.getElementById('visitText');
+
+        if (data.status === 'visited') {
+            btn.classList.add('visited');
+            icon.className = 'fa-solid fa-location-dot';
+            text.textContent = "I've been here";
+        } else {
+            btn.classList.remove('visited');
+            icon.className = 'fa-solid fa-location-dot';
+            text.textContent = 'Mark as visited';
+        }
+    });
+}
+
+
+let currentView = 'cities';
+let currentTag = '';
+let photoSearchTimeout = null;
+let galleryMsnry = null;
+
+function switchView(view) {
+    currentView = view;
+
+    let citiesBtn = document.getElementById('citiesBtn');
+    let photosBtn = document.getElementById('photosBtn');
+    let citiesView = document.getElementById('citiesView');
+    let photosView = document.getElementById('photosView');
+
+    if (view === 'cities') {
+        citiesBtn.classList.add('active');
+        photosBtn.classList.remove('active');
+        citiesView.classList.remove('hidden');
+        photosView.classList.add('hidden');
+    } else {
+        photosBtn.classList.add('active');
+        citiesBtn.classList.remove('active');
+        photosView.classList.remove('hidden');
+        citiesView.classList.add('hidden');
+        loadGalleryPhotos('', '');
+    }
+}
+
+function loadGalleryPhotos(search, tag) {
+    let url = '../php/getPhotos.php?search=' + encodeURIComponent(search) + '&tag=' + encodeURIComponent(tag);
+
+    fetch(url)
+        .then(function(response) { return response.json(); })
+        .then(function(photos) {
+            let grid = document.getElementById('photosGrid');
+            grid.innerHTML = '';
+
+            if (photos.length === 0) {
+                grid.innerHTML = '<p style="color:#555; font-size:13px; letter-spacing:1px;">No photos found.</p>';
+                return;
+            }
+
+            photos.forEach(function(photo) {
+                let div = document.createElement('div');
+                div.className = 'galleryPhotoCard';
+                div.innerHTML = `
+                    <img src="../images/${photo.image_path}" alt="${photo.title}">
+                    <div class="galleryPhotoLikes">
+                        <i class="fa-solid fa-heart"></i>
+                        <span>${photo.like_count}</span>
+                    </div>
+                    <div class="galleryPhotoOverlay">
+                        <p class="galleryPhotoTitle">${photo.title}</p>
+                        <p class="galleryPhotoCity">${photo.city_name}</p>
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+
+            if (galleryMsnry) {
+                galleryMsnry.destroy();
+            }
+
+            galleryMsnry = new Masonry(grid, {
+                itemSelector: '.galleryPhotoCard',
+                columnWidth: '.galleryPhotoCard',
+                gutter: 15,
+                percentPosition: true
+            });
+
+            let imgs = grid.querySelectorAll('img');
+            let loaded = 0;
+            imgs.forEach(function(img) {
+                img.addEventListener('load', function() {
+                    loaded++;
+                    if (loaded === imgs.length) galleryMsnry.layout();
+                });
+            });
+        });
+}
+
+function openUploadModal() {
+    document.getElementById('uploadModal').classList.remove('hidden');
+}
+
+function closeUploadModal() {
+    document.getElementById('uploadModal').classList.add('hidden');
+    document.getElementById('uploadPreview').classList.add('hidden');
+    document.getElementById('uploadPreview').src = '';
+    document.getElementById('uploadTitle_input').value = '';
+    document.getElementById('uploadDesc').value = '';
+    document.getElementById('uploadCity').value = '';
+    document.getElementById('fileInput').value = '';
+    document.querySelectorAll('.uploadTagBtn').forEach(function(btn) {
+        btn.classList.remove('selected');
+    });
+}
+
+function submitUpload() {
+    let title = document.getElementById('uploadTitle_input').value;
+    let desc = document.getElementById('uploadDesc').value;
+    let city = document.getElementById('uploadCity').value;
+    let file = document.getElementById('fileInput').files[0];
+
+    if (!title || !city || !file) return;
+
+    let selectedTags = [];
+    document.querySelectorAll('.uploadTagBtn.selected').forEach(function(btn) {
+        selectedTags.push(btn.getAttribute('data-id'));
+    });
+
+    let formData = new FormData();
+    formData.append('photo', file);
+    formData.append('title', title);
+    formData.append('description', desc);
+    formData.append('city_id', city);
+    selectedTags.forEach(function(tag) {
+        formData.append('tags[]', tag);
+    });
+
+    let btn = document.getElementById('uploadSubmitBtn');
+    btn.textContent = 'Uploading...';
+
+    fetch('../php/upload.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        if (data.status === 'success') {
+            closeUploadModal();
+            btn.textContent = 'Upload';
+        } else {
+            btn.textContent = 'Upload';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    let searchInput = document.getElementById('collectionSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            renderCollectionResults(this.value);
+        });
+    }
+
+    let citySearch = document.getElementById('searchInput');
+    if (citySearch) {
+        citySearch.addEventListener('input', function() {
+            let query = this.value.toLowerCase();
+            document.querySelectorAll('.cityCard').forEach(function(card) {
+                let name = card.querySelector('.cityName').textContent.toLowerCase();
+                let country = card.querySelector('.cityCountry').textContent.toLowerCase();
+                if (name.includes(query) || country.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    let photoSearch = document.getElementById('photoSearchInput');
+    if (photoSearch) {
+        photoSearch.addEventListener('input', function() {
+            clearTimeout(photoSearchTimeout);
+            let val = this.value;
+            photoSearchTimeout = setTimeout(function() {
+                loadGalleryPhotos(val, currentTag);
+            }, 400);
+        });
+    }
+
+    document.querySelectorAll('.tagBtn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tagBtn').forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            currentTag = this.getAttribute('data-tag');
+            let search = document.getElementById('photoSearchInput') ? document.getElementById('photoSearchInput').value : '';
+            loadGalleryPhotos(search, currentTag);
+        });
+    });
+
+    document.querySelectorAll('.uploadTagBtn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('selected');
+        });
+    });
+
+    let fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            let file = this.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let preview = document.getElementById('uploadPreview');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    document.getElementById('uploadDropzone').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    let galleryGrid = document.getElementById('grid');
+    if (galleryGrid) {
+        let msnryGallery = new Masonry(galleryGrid, {
+            itemSelector: '.cityCard',
+            columnWidth: '.cityCard',
+            gutter: 20,
+            percentPosition: true
+        });
+
+        let imgs = galleryGrid.querySelectorAll('img');
+        let loaded = 0;
+        imgs.forEach(function(img) {
+            img.addEventListener('load', function() {
+                loaded++;
+                if (loaded === imgs.length) msnryGallery.layout();
+            });
+        });
+    }
+
+    let photosGrid = document.getElementById('photosGrid');
+    if (photosGrid) {
+        let msnryPhotos = new Masonry(photosGrid, {
+            itemSelector: '.photoCard',
+            columnWidth: '.photoCard',
+            gutter: 15,
+            percentPosition: true
+        });
+
+        let imgs2 = photosGrid.querySelectorAll('img');
+        let loaded2 = 0;
         imgs2.forEach(function(img) {
             img.addEventListener('load', function() {
                 loaded2++;

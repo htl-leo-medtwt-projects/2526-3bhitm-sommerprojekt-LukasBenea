@@ -294,11 +294,38 @@ html, body {
     z-index: 1;
 }
 
+#viewSwitch {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 30px;
+    background-color: #111;
+    border: 1px solid #222;
+    border-radius: 30px;
+    padding: 5px;
+    width: fit-content;
+}
+
+.switchBtn {
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+    transition: all 0.3s;
+}
+
+.switchBtn.active {
+    background-color: #c9a84c;
+    color: #0a0a0a;
+}
+
 #topBar {
     margin-bottom: 20px;
 }
 
-#searchInput {
+#searchInput, #photoSearchInput {
     width: 100%;
     padding: 14px 24px;
     border-radius: 30px;
@@ -311,30 +338,48 @@ html, body {
     transition: border 0.2s;
 }
 
-#searchInput:focus {
+#searchInput:focus, #photoSearchInput:focus {
     border: 1px solid #c9a84c;
 }
 
-#searchInput::placeholder {
+#searchInput::placeholder, #photoSearchInput::placeholder {
     color: #555;
 }
 
-#filterBar {
+#photosTopBar {
+    margin-bottom: 25px;
     display: flex;
-    justify-content: space-between;
-    margin-top: 12px;
-    font-size: 14px;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#tagsBar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tagBtn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1px solid #333;
     color: #888;
+    font-size: 12px;
     letter-spacing: 1px;
-}
-
-#filterBtn, #addBtn {
     cursor: pointer;
-    transition: color 0.2s;
+    transition: all 0.2s;
+    text-transform: uppercase;
 }
 
-#filterBtn:hover, #addBtn:hover {
+.tagBtn:hover {
+    border-color: #c9a84c;
     color: #c9a84c;
+}
+
+.tagBtn.active {
+    background-color: #c9a84c;
+    border-color: #c9a84c;
+    color: #0a0a0a;
 }
 
 #grid {
@@ -399,6 +444,84 @@ html, body {
     text-transform: uppercase;
 }
 
+#photosGrid {
+    width: 100%;
+}
+
+.galleryPhotoCard {
+    position: relative;
+    width: 30%;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: #111;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.galleryPhotoCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+}
+
+.galleryPhotoCard img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s;
+}
+
+.galleryPhotoCard:hover img {
+    transform: scale(1.05);
+}
+
+.galleryPhotoOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.galleryPhotoCard:hover .galleryPhotoOverlay {
+    opacity: 1;
+}
+
+.galleryPhotoTitle {
+    color: #f0f0f0;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.galleryPhotoCity {
+    color: #c9a84c;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.galleryPhotoLikes {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: rgba(0,0,0,0.6);
+    border-radius: 20px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #f0f0f0;
+}
+
+.galleryPhotoLikes i {
+    color: #e74c3c;
+    font-size: 11px;
+}
+
 #heroOverlay {
     position: relative;
     z-index: 2;
@@ -459,4 +582,184 @@ html, body {
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.hidden {
+    display: none;
+}
+
+#uploadModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 200;
+}
+
+#uploadOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+}
+
+#uploadBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border-radius: 20px;
+    width: 500px;
+    padding: 40px;
+    z-index: 201;
+    border: 1px solid #333;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#uploadClose {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    color: #888;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+#uploadClose:hover {
+    color: #c9a84c;
+}
+
+#uploadTitle {
+    font-size: 18px;
+    color: #f0f0f0;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+}
+
+#uploadDropzone {
+    border: 2px dashed #333;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+#uploadDropzone:hover {
+    border-color: #c9a84c;
+    color: #c9a84c;
+}
+
+#uploadDropzone i {
+    font-size: 40px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+#uploadDropzone p {
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+#uploadPreview {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    max-height: 200px;
+    object-fit: cover;
+}
+
+#uploadForm input[type="text"],
+#uploadForm select {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: #f0f0f0;
+    font-family: comfortaa;
+    font-size: 14px;
+    padding: 10px 0;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 18px;
+}
+
+#uploadForm input[type="text"]:focus,
+#uploadForm select:focus {
+    border-bottom: 1px solid #c9a84c;
+}
+
+#uploadForm select option {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+}
+
+#uploadTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.uploadTagBtn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #333;
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+}
+
+.uploadTagBtn:hover {
+    border-color: #c9a84c;
+    color: #c9a84c;
+}
+
+.uploadTagBtn.selected {
+    background-color: #c9a84c;
+    border-color: #c9a84c;
+    color: #0a0a0a;
+}
+
+#uploadSubmitBtn {
+    width: 100%;
+    padding: 14px;
+    background-color: transparent;
+    border: 1px solid #c9a84c;
+    color: #c9a84c;
+    font-family: comfortaa;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#uploadSubmitBtn:hover {
+    background-color: #c9a84c;
+    color: #0a0a0a;
+}
+#addBtn {
+    display: inline-block;
+    margin-top: 12px;
+    color: #c9a84c;
+    font-size: 13px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+}
+
+#addBtn:hover {
+    opacity: 0.7;
 }

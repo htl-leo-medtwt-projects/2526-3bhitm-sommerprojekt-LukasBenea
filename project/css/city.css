@@ -93,7 +93,7 @@ html, body {
     height: 65vh;
     margin: 80px auto 0 auto;
     border-radius: 20px;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
 }
 
@@ -102,6 +102,7 @@ html, body {
     height: 100%;
     object-fit: cover;
     filter: brightness(0.6);
+    border-radius: 20px;
 }
 
 .noImage {
@@ -509,4 +510,30 @@ html, body {
 .collectionCreate:hover {
     background-color: #c9a84c;
     color: #0f0f0f;
+}
+
+#visitBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #f0f0f0;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+#visitBtn:hover {
+    border-color: #c9a84c;
+    color: #c9a84c;
+}
+
+#visitBtn.visited {
+    border-color: #c9a84c;
+    color: #c9a84c;
 }

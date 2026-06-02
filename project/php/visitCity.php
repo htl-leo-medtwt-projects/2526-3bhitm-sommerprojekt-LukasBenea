@@ -1,5 +1,4 @@
 <?php
-
     session_start();
     require_once "mysql.php";
 
@@ -12,23 +11,16 @@
     $result = $stmt->get_result();
 
     if ($result->fetch_assoc()) {
-
         $stmt2 = $conn->prepare("DELETE FROM visited_cities WHERE user_id = ? AND city_id = ?");
         $stmt2->bind_param("ii", $user_id, $city_id);
         $stmt2->execute();
-
         echo json_encode(["status" => "removed"]);
-
     } else {
-
         $stmt2 = $conn->prepare("INSERT INTO visited_cities (user_id, city_id) VALUES (?, ?)");
         $stmt2->bind_param("ii", $user_id, $city_id);
         $stmt2->execute();
-
         echo json_encode(["status" => "visited"]);
-
     }
 
     $conn->close();
-
 ?>

@@ -1,82 +1,75 @@
 <?php
+    session_start();
 
-session_start();
+    $mode = "login";
+    if (isset($_GET["mode"]) && $_GET["mode"] === "register") {
+        $mode = "register";
+    }
 
-$mode = "login";
-if (isset($_GET["mode"]) && $_GET["mode"] === "register") {
-    $mode = "register";
-}
+    require_once "mysql.php";
 
-require_once "mysql.php";
+    $error = "";
+    $success = "";
 
-$error = "";
-$success = "";
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $postMode = $_POST["mode"] ?? "";
+        $user = trim($_POST["user"] ?? "");
+        $pass = $_POST["password"] ?? "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        if ($postMode === "register") {
+            $pass2 = $_POST["password2"] ?? "";
 
-    $postMode = $_POST["mode"] ?? "";
-    $user = trim($_POST["user"] ?? "");
-    $pass = $_POST["password"] ?? "";
+            if ($pass !== $pass2) {
+                $error = "Passwords do not match!";
+            } else {
+                $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+                $stmt->bind_param("ss", $user, $user);
+                $stmt->execute();
+                $result = $stmt->get_result();
 
-    if ($postMode === "register") {
-
-        $pass2 = $_POST["password2"] ?? "";
-
-        if ($pass !== $pass2) {
-            $error = "Passwords do not match!";
-        } else {
-            $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+                if ($result->fetch_assoc()) {
+                    $error = "User already exists!";
+                } else {
+                    $hashedPassword = password_hash($pass, PASSWORD_BCRYPT);
+                    $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+                    $stmt->bind_param("sss", $user, $user, $hashedPassword);
+                    $stmt->execute();
+                    $success = "Registration successful! You can now log in.";
+                }
+            }
+        } elseif ($postMode === "login") {
+            $stmt = $conn->prepare("SELECT id, username, email, password FROM users WHERE username = ? OR email = ?");
             $stmt->bind_param("ss", $user, $user);
             $stmt->execute();
             $result = $stmt->get_result();
+            $dbUser = $result->fetch_assoc();
 
-            if ($result->fetch_assoc()) {
-                $error = "User already exists!";
+            if ($dbUser && password_verify($pass, $dbUser["password"])) {
+                $_SESSION["user_id"] = $dbUser["id"];
+                $_SESSION["email"] = $dbUser["email"];
+                $_SESSION["user"] = $dbUser["username"];
+                $_SESSION["login"] = 1;
+                header("Location: index.php");
+                exit();
             } else {
-                $hashedPassword = password_hash($pass, PASSWORD_BCRYPT);
-                $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-                $stmt->bind_param("sss", $user, $user, $hashedPassword);
-                $stmt->execute();
-                $success = "Registration successful! You can now log in.";
+                $error = "Wrong username or password!";
             }
         }
-
-    } elseif ($postMode === "login") {
-
-        $stmt = $conn->prepare("SELECT id, username, email, password FROM users WHERE username = ? OR email = ?");
-        $stmt->bind_param("ss", $user, $user);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $dbUser = $result->fetch_assoc();
-
-        if ($dbUser && password_verify($pass, $dbUser["password"])) {
-            $_SESSION["user_id"] = $dbUser["id"];
-            $_SESSION["email"] = $dbUser["email"];
-            $_SESSION["user"] = $dbUser["username"];
-            $_SESSION["login"] = 1;
-            header("Location: index.php");
-            exit();
-        } else {
-            $error = "Wrong username or password!";
-        }
-
     }
-}
 
-$conn->close();
+    $conn->close();
 
-$errorHtml = !empty($error)
-    ? '<div class="message error">' . htmlspecialchars($error) . '</div>'
-    : '';
+    $errorHtml = !empty($error)
+        ? '<div class="message error">' . htmlspecialchars($error) . '</div>'
+        : '';
 
-$successHtml = !empty($success)
-    ? '<div class="message success">' . htmlspecialchars($success) . '</div>'
-    : '';
+    $successHtml = !empty($success)
+        ? '<div class="message success">' . htmlspecialchars($success) . '</div>'
+        : '';
 
-$password2Field = $mode === "register"
-    ? '<div class="inputBox"><input type="password" name="password2" placeholder="Repeat Password"></div>'
-    : '';
-
+    $password2Field = $mode === "register"
+        ? '<div class="inputBox"><input type="password" name="password2" placeholder="Repeat Password"></div>'
+        : '';
 ?>
 
 <!DOCTYPE html>
@@ -135,17 +128,11 @@ $password2Field = $mode === "register"
             </div>
 
             <div id="bottomText">
-                <?php
-                if ($mode === 'login') {
-                ?>
+                <?php if ($mode === 'login') { ?>
                     <p>Don't have an account? <a href="registration.php?mode=register">Sign up</a></p>
-                <?php
-                } else {
-                ?>
+                <?php } else { ?>
                     <p>Already have an account? <a href="registration.php?mode=login">Log in</a></p>
-                <?php
-                }
-                ?>
+                <?php } ?>
             </div>
 
         </div>

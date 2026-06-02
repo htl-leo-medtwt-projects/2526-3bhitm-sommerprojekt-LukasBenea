@@ -40,9 +40,7 @@ html, body {
     transition: opacity 0.2s;
 }
 
-#navLogo:hover {
-    opacity: 0.7;
-}
+#navLogo:hover { opacity: 0.7; }
 
 #navRight {
     display: flex;
@@ -59,9 +57,7 @@ html, body {
     transition: color 0.2s;
 }
 
-#navBack:hover {
-    color: #c9a84c;
-}
+#navBack:hover { color: #c9a84c; }
 
 #navLogout {
     color: #888;
@@ -72,9 +68,7 @@ html, body {
     transition: color 0.2s;
 }
 
-#navLogout:hover {
-    color: #e74c3c;
-}
+#navLogout:hover { color: #e74c3c; }
 
 #coverSection {
     width: 100%;
@@ -159,9 +153,7 @@ html, body {
     background-color: #111;
 }
 
-#profileInfo {
-    padding-bottom: 10px;
-}
+#profileInfo { padding-bottom: 10px; }
 
 #profileUsername {
     font-size: 28px;
@@ -203,9 +195,7 @@ html, body {
     transition: border-color 0.2s;
 }
 
-.statBox:hover {
-    border-color: #c9a84c;
-}
+.statBox:hover { border-color: #c9a84c; }
 
 .statValue {
     font-size: 28px;
@@ -223,15 +213,13 @@ html, body {
 
 #contentSection {
     width: 85vw;
-    margin: 0 auto 80px auto;
+    margin: 0 auto 0 auto;
     display: flex;
     flex-direction: column;
     gap: 60px;
 }
 
-.contentBlock {
-    position: relative;
-}
+.contentBlock { position: relative; }
 
 .blockTitle {
     font-size: 16px;
@@ -249,18 +237,64 @@ html, body {
     letter-spacing: 1px;
 }
 
-.photoGrid {
-    width: 100%;
+/* ─── PREVIEW GRID (with blur + show all) ─────────────────────────────────── */
+
+.previewGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    position: relative;
 }
+
+.previewGrid.hasMore {
+    max-height: 480px;
+    overflow: hidden;
+}
+
+.previewGrid.hasMore::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 180px;
+    background: linear-gradient(transparent, #0a0a0a);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.visitedPreviewGrid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.showAllBtn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 30px;
+    border: 1px solid #333;
+    border-radius: 25px;
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.showAllBtn:hover {
+    border-color: #c9a84c;
+    color: #c9a84c;
+}
+
+/* ─── PHOTO CARDS ─────────────────────────────────────────────────────────── */
 
 .photoCard {
     position: relative;
-    width: 30%;
-    margin-bottom: 15px;
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
     background-color: #111;
+    aspect-ratio: 4/3;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -271,13 +305,12 @@ html, body {
 
 .photoCard img {
     width: 100%;
-    display: block;
+    height: 100%;
+    object-fit: cover;
     transition: transform 0.4s;
 }
 
-.photoCard:hover img {
-    transform: scale(1.05);
-}
+.photoCard:hover img { transform: scale(1.05); }
 
 .photoOverlay {
     position: absolute;
@@ -290,15 +323,42 @@ html, body {
     transition: opacity 0.3s;
 }
 
-.photoCard:hover .photoOverlay {
-    opacity: 1;
-}
+.photoCard:hover .photoOverlay { opacity: 1; }
 
 .photoTitle {
     color: #f0f0f0;
     font-size: 13px;
     letter-spacing: 1px;
 }
+
+.unlikeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background-color: rgba(0,0,0,0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.photoCard:hover .unlikeBtn { opacity: 1; }
+
+.unlikeBtn:hover { transform: scale(1.1); }
+
+.unlikeBtn i {
+    color: #e74c3c;
+    font-size: 13px;
+}
+
+/* ─── COLLECTION GRID ─────────────────────────────────────────────────────── */
 
 .collectionGrid {
     display: grid;
@@ -349,15 +409,9 @@ html, body {
     transition: color 0.2s;
 }
 
-.deleteCollectionBtn:hover {
-    color: #e74c3c;
-}
+.deleteCollectionBtn:hover { color: #e74c3c; }
 
-.visitedGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-}
+/* ─── VISITED GRID ────────────────────────────────────────────────────────── */
 
 .visitedCard {
     position: relative;
@@ -367,6 +421,8 @@ html, body {
     cursor: pointer;
     background-color: #111;
     transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    display: block;
 }
 
 .visitedCard:hover {
@@ -382,9 +438,7 @@ html, body {
     transition: transform 0.4s;
 }
 
-.visitedCard:hover img {
-    transform: scale(1.05);
-}
+.visitedCard:hover img { transform: scale(1.05); }
 
 .visitedOverlay {
     position: absolute;
@@ -410,11 +464,17 @@ html, body {
     margin-top: 3px;
 }
 
-.hidden {
-    display: none;
-}
+/* ─── HIDDEN ──────────────────────────────────────────────────────────────── */
 
-#collectionOverlayModal, #photoDetailModal, #deleteModal {
+.hidden { display: none; }
+
+/* ─── MODALS ──────────────────────────────────────────────────────────────── */
+
+#sectionOverlay,
+#collectionOverlayModal,
+#photoDetailModal,
+#deleteModal,
+#removeCollectionModal {
     position: fixed;
     top: 0;
     left: 0;
@@ -422,28 +482,26 @@ html, body {
     height: 100vh;
 }
 
-#collectionOverlayModal, #photoDetailModal {
+#sectionOverlay, #collectionOverlayModal, #photoDetailModal, #removeCollectionModal {
     z-index: 200;
 }
 
-#deleteModal {
-    z-index: 300;
-}
+#deleteModal { z-index: 300; }
 
-#collectionOverlayBg, #photoDetailOverlay, #deleteOverlay {
+#sectionOverlayBg,
+#collectionOverlayBg,
+#photoDetailOverlay,
+#deleteOverlay,
+#removeCollectionOverlay {
     position: absolute;
     width: 100%;
     height: 100%;
-}
-
-#collectionOverlayBg, #photoDetailOverlay {
     background-color: rgba(0,0,0,0.9);
 }
 
-#deleteOverlay {
-    background-color: rgba(0,0,0,0.85);
-}
+#deleteOverlay { background-color: rgba(0,0,0,0.85); }
 
+#sectionOverlayBox,
 #collectionOverlayBox {
     position: absolute;
     top: 50%;
@@ -459,7 +517,10 @@ html, body {
     padding: 40px;
 }
 
-#collectionOverlayClose, #photoDetailClose {
+#sectionOverlayClose,
+#collectionOverlayClose,
+#photoDetailClose,
+#removeCollectionClose {
     position: absolute;
     top: 15px;
     right: 20px;
@@ -469,10 +530,14 @@ html, body {
     transition: color 0.2s;
 }
 
-#collectionOverlayClose:hover, #photoDetailClose:hover {
+#sectionOverlayClose:hover,
+#collectionOverlayClose:hover,
+#photoDetailClose:hover,
+#removeCollectionClose:hover {
     color: #c9a84c;
 }
 
+#sectionOverlayTitle,
 #collectionOverlayTitle {
     font-size: 20px;
     color: #f0f0f0;
@@ -481,6 +546,7 @@ html, body {
     margin-bottom: 25px;
 }
 
+#sectionOverlayGrid,
 #collectionOverlayGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -509,33 +575,67 @@ html, body {
     transition: transform 0.4s;
 }
 
-.collectionPhotoCard:hover img {
-    transform: scale(1.05);
+.collectionPhotoCard:hover img { transform: scale(1.05); }
+
+.collectionPhotoOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
-#photoDetailBox, #deleteBox {
+.collectionPhotoCard:hover .collectionPhotoOverlay { opacity: 1; }
+
+.collectionPhotoTitle {
+    color: #f0f0f0;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.removeFromCollectionBtn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    background-color: rgba(0,0,0,0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, background-color 0.2s;
+    z-index: 10;
+}
+
+.collectionPhotoCard:hover .removeFromCollectionBtn { opacity: 1; }
+
+.removeFromCollectionBtn:hover { background-color: rgba(231, 76, 60, 0.8); }
+
+.removeFromCollectionBtn i {
+    color: #f0f0f0;
+    font-size: 12px;
+}
+
+/* ─── PHOTO DETAIL MODAL ──────────────────────────────────────────────────── */
+
+#photoDetailBox {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #1a1a1a;
     border: 1px solid #333;
-}
-
-#photoDetailBox {
     border-radius: 20px;
     width: 80vw;
     max-height: 85vh;
     overflow: hidden;
     z-index: 201;
-}
-
-#deleteBox {
-    border-radius: 16px;
-    width: 350px;
-    padding: 35px;
-    z-index: 301;
-    text-align: center;
 }
 
 #photoDetailContent {
@@ -544,9 +644,7 @@ html, body {
     height: 85vh;
 }
 
-#photoDetailLeft {
-    overflow: hidden;
-}
+#photoDetailLeft { overflow: hidden; }
 
 #photoDetailImg {
     width: 100%;
@@ -560,6 +658,7 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    overflow-y: auto;
 }
 
 #photoDetailTitle {
@@ -574,10 +673,35 @@ html, body {
     line-height: 1.7;
 }
 
+#photoDetailActions {
+    display: flex;
+    gap: 15px;
+    padding: 12px 0;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+}
+
+#photoDetailLikeBtn,
+#photoDetailBookmarkBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #888;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+}
+
+#photoDetailLikeBtn:hover { color: #e74c3c; }
+#photoDetailBookmarkBtn:hover { color: #c9a84c; }
+
+#photoDetailLikeBtn i.liked { color: #e74c3c; }
+
 #photoDetailExif {
     border-top: 1px solid #333;
     padding-top: 15px;
-    margin-top: 15px;
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -587,6 +711,88 @@ html, body {
     font-size: 12px;
     color: #888;
     letter-spacing: 0.5px;
+}
+
+/* ─── REMOVE COLLECTION MODAL ─────────────────────────────────────────────── */
+
+#removeCollectionBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border-radius: 16px;
+    width: 400px;
+    padding: 35px;
+    z-index: 201;
+    border: 1px solid #333;
+}
+
+#removeCollectionTitle {
+    font-size: 16px;
+    color: #f0f0f0;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+#removeCollectionList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.removeCollectionOption {
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 12px 15px;
+    cursor: pointer;
+    color: #f0f0f0;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.removeCollectionOption:hover {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+#removeAllBtn {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #e74c3c;
+    border-radius: 25px;
+    color: #e74c3c;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#removeAllBtn:hover {
+    background-color: #e74c3c;
+    color: #f0f0f0;
+}
+
+/* ─── DELETE MODAL ────────────────────────────────────────────────────────── */
+
+#deleteBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 16px;
+    width: 350px;
+    padding: 35px;
+    z-index: 301;
+    text-align: center;
 }
 
 #deleteTitle {
@@ -639,3 +845,311 @@ html, body {
     background-color: #e74c3c;
     color: #f0f0f0;
 }
+
+/* ─── FOOTER ──────────────────────────────────────────────────────────────── */
+
+#footer {
+    width: 100%;
+    background-color: #080808;
+    border-top: 1px solid #1a1a1a;
+    padding: 50px 0 30px 0;
+    margin-top: 60px;
+}
+
+#footerInner {
+    width: 85vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+}
+
+#footerLogo {
+    text-decoration: none;
+    font-size: 22px;
+    letter-spacing: 8px;
+    color: transparent;
+    -webkit-text-stroke: 1px #c9a84c;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: opacity 0.2s;
+}
+
+#footerLogo:hover { opacity: 0.7; }
+
+#footerTagline {
+    font-size: 12px;
+    color: #444;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+#footerLinks {
+    display: flex;
+    gap: 30px;
+    margin: 10px 0;
+}
+
+#footerLinks a {
+    color: #555;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+#footerLinks a:hover { color: #c9a84c; }
+
+#footerCopy {
+    font-size: 11px;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+/* ─── MODALS (Collection + Save) ─────────────────────────────────────────── */
+
+.hidden { display: none; }
+
+#collectionModal, #saveModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 400;
+}
+
+#collectionOverlay, #saveModalOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+}
+
+#collectionBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border-radius: 16px;
+    width: 400px;
+    padding: 30px;
+    z-index: 401;
+    border: 1px solid #333;
+}
+
+#collectionClose {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    color: #888;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+#collectionClose:hover { color: #c9a84c; }
+
+#collectionTitle {
+    font-size: 18px;
+    color: #f0f0f0;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+#collectionSearch {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: #f0f0f0;
+    font-family: comfortaa;
+    font-size: 14px;
+    padding: 8px 0;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+#collectionSearch:focus { border-bottom: 1px solid #c9a84c; }
+#collectionSearch::placeholder { color: #555; }
+
+#collectionResults {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.collectionOption {
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 12px 15px;
+    cursor: pointer;
+    color: #f0f0f0;
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: border-color 0.2s;
+}
+
+.collectionOption:hover { border-color: #c9a84c; }
+
+.collectionCreate {
+    background-color: transparent;
+    border: 1px solid #c9a84c;
+    border-radius: 10px;
+    padding: 12px 15px;
+    cursor: pointer;
+    color: #c9a84c;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: background-color 0.2s, color 0.2s;
+    font-family: comfortaa;
+    text-align: center;
+}
+
+.collectionCreate:hover {
+    background-color: #c9a84c;
+    color: #0f0f0f;
+}
+
+#saveModalBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border-radius: 16px;
+    width: 380px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 30px;
+    z-index: 401;
+    border: 1px solid #2a2a2a;
+    display: flex;
+    flex-direction: column;
+}
+
+#saveModalClose {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    color: #888;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+#saveModalClose:hover { color: #c9a84c; }
+
+#saveModalTitle {
+    font-size: 16px;
+    color: #f0f0f0;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.saveModalLabel {
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+#savedInList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.savedInOption {
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 11px 15px;
+    cursor: pointer;
+    color: #f0f0f0;
+    font-size: 13px;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.savedInOption:hover { border-color: #e74c3c; color: #e74c3c; }
+.savedInOption:hover .savedInIcon { color: #e74c3c; }
+
+.savedInIcon {
+    color: #c9a84c;
+    font-size: 12px;
+    transition: color 0.2s;
+}
+
+#removeAllBtn {
+    padding: 9px 12px;
+    text-align: center;
+    border: 1px solid #e74c3c;
+    border-radius: 25px;
+    color: #e74c3c;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-bottom: 20px;
+    font-family: comfortaa;
+}
+
+#removeAllBtn:hover { background-color: #e74c3c; color: #f0f0f0; }
+
+#saveModalDivider {
+    border: none;
+    border-top: 1px solid #222;
+    margin-bottom: 20px;
+}
+
+#saveModalCollectionSearch {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: #f0f0f0;
+    font-family: comfortaa;
+    font-size: 13px;
+    padding: 8px 0;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+#saveModalCollectionSearch:focus { border-bottom-color: #c9a84c; }
+#saveModalCollectionSearch::placeholder { color: #555; }
+
+#saveModalResults {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.fa-bookmark.saved { color: #c9a84c; }
+#photoDetailBookmarkBtn i.saved { color: #c9a84c; }
+
+/* ─── ICON FARBEN ─────────────────────────────────────────────────────────── */
+
+.fa-heart.liked { color: #e74c3c; }
+.fa-bookmark.saved { color: #c9a84c; }

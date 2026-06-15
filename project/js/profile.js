@@ -36,6 +36,7 @@ function openCollectionOverlay(collectionId) {
 
 function removePhotoFromCollectionOverlay(event, photoId) {
     event.stopPropagation();
+    let card = event.currentTarget.closest('.collectionPhotoCard');
     fetch('../php/removeFromCollection.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -43,7 +44,7 @@ function removePhotoFromCollectionOverlay(event, photoId) {
     })
     .then(function(response) { return response.json(); })
     .then(function(data) {
-        event.currentTarget.closest('.collectionPhotoCard').remove();
+        if (card) card.remove();
         if (currentDetailList) {
             let idx = currentDetailList.findIndex(p => p.id == photoId);
             if (idx !== -1) currentDetailList.splice(idx, 1);

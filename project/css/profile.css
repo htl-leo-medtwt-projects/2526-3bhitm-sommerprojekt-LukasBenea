@@ -657,9 +657,25 @@ html, body {
     padding: 35px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 24px;
+    justify-content: space-between;
     overflow-y: auto;
 }
+
+#photoDetailRight .pmHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pmCity {
+    font-size: 11px;
+    color: #c9a84c;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.pmCity:empty { display: none; }
 
 #photoDetailTitle {
     font-size: 22px;
@@ -701,11 +717,14 @@ html, body {
 #photoDetailExif {
     border-top: 1px solid #333;
     padding-top: 15px;
-    margin-top: auto;
+    margin-top: 0;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
+
+#photoDetailExif:empty { display: none; }
+#photoDetailMeta:empty { display: none; }
 
 #photoDetailExif .exifRow {
     font-size: 12px;
@@ -1153,3 +1172,481 @@ html, body {
 
 .fa-heart.liked { color: #e74c3c; }
 .fa-bookmark.saved { color: #c9a84c; }
+
+/* ─── EDIT PROFILE BUTTON ─────────────────────────────────────────────────── */
+
+#editProfileBtn {
+    margin-left: auto;
+    align-self: flex-end;
+    margin-bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 1px solid #333;
+    border-radius: 25px;
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+#editProfileBtn:hover { border-color: #c9a84c; color: #c9a84c; }
+
+/* ─── DELETE PHOTO BUTTON ─────────────────────────────────────────────────── */
+
+.deletePhotoBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background-color: rgba(0,0,0,0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, background-color 0.2s, transform 0.2s;
+    z-index: 10;
+}
+
+.photoCard:hover .deletePhotoBtn { opacity: 1; }
+.deletePhotoBtn:hover { background-color: rgba(231,76,60,0.85); transform: scale(1.1); }
+.deletePhotoBtn i { color: #f0f0f0; font-size: 13px; }
+
+/* ─── COLLECTION CARD (cover + actions) ───────────────────────────────────── */
+
+.collectionCard {
+    overflow: hidden;
+    padding: 0;
+}
+
+.collectionCover {
+    width: 100%;
+    height: 130px;
+    overflow: hidden;
+    background-color: #1a1a1a;
+}
+
+.collectionCover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+}
+
+.collectionCard:hover .collectionCover img { transform: scale(1.05); }
+
+.collectionCoverEmpty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 30px;
+    background-color: #161616;
+}
+
+.collectionCardBody { padding: 18px 20px; }
+
+.collectionCardBtns {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.collectionCard:hover .collectionCardBtns { opacity: 1; }
+
+.editCollectionBtn,
+.collectionCardBtns .deleteCollectionBtn {
+    position: static;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(0,0,0,0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #f0f0f0;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.editCollectionBtn:hover { color: #c9a84c; }
+.collectionCardBtns .deleteCollectionBtn:hover { color: #e74c3c; }
+.editCollectionBtn i,
+.collectionCardBtns .deleteCollectionBtn i { font-size: 13px; }
+
+/* ─── DELETE PHOTO MODAL ──────────────────────────────────────────────────── */
+
+#deletePhotoModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 300;
+}
+
+#deletePhotoOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.85);
+}
+
+#deletePhotoBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 16px;
+    width: 350px;
+    max-width: 90vw;
+    padding: 35px;
+    z-index: 301;
+    text-align: center;
+}
+
+#deletePhotoTitle { font-size: 18px; color: #f0f0f0; letter-spacing: 2px; margin-bottom: 12px; }
+#deletePhotoText { font-size: 13px; color: #888; margin-bottom: 25px; line-height: 1.6; }
+#deletePhotoBtns { display: flex; gap: 15px; justify-content: center; }
+
+#deletePhotoCancelBtn, #deletePhotoConfirmBtn {
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+#deletePhotoCancelBtn { border: 1px solid #333; color: #888; transition: border-color 0.2s, color 0.2s; }
+#deletePhotoCancelBtn:hover { border-color: #f0f0f0; color: #f0f0f0; }
+#deletePhotoConfirmBtn { border: 1px solid #e74c3c; color: #e74c3c; transition: background-color 0.2s, color 0.2s; }
+#deletePhotoConfirmBtn:hover { background-color: #e74c3c; color: #f0f0f0; }
+
+/* ─── EDIT COLLECTION MODAL ───────────────────────────────────────────────── */
+
+#editCollectionModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 400;
+}
+
+#editCollectionOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+}
+
+#editCollectionBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 16px;
+    width: 400px;
+    max-width: 90vw;
+    padding: 30px;
+    z-index: 401;
+}
+
+#editCollectionClose {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    color: #888;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+#editCollectionClose:hover { color: #c9a84c; }
+#editCollectionTitle { font-size: 18px; color: #f0f0f0; letter-spacing: 2px; margin-bottom: 20px; }
+
+#editCollectionName, #editCollectionDesc {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: #f0f0f0;
+    font-family: comfortaa;
+    font-size: 14px;
+    padding: 10px 0;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 18px;
+}
+
+#editCollectionName:focus, #editCollectionDesc:focus { border-bottom-color: #c9a84c; }
+#editCollectionName::placeholder, #editCollectionDesc::placeholder { color: #555; }
+
+#editCollectionSaveBtn {
+    width: 100%;
+    padding: 13px;
+    background: transparent;
+    border: 1px solid #c9a84c;
+    color: #c9a84c;
+    font-family: comfortaa;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#editCollectionSaveBtn:hover { background-color: #c9a84c; color: #0a0a0a; }
+
+/* ─── EDIT PROFILE MODAL ──────────────────────────────────────────────────── */
+
+#editProfileModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 400;
+}
+
+#editProfileOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+}
+
+#editProfileBox {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 20px;
+    width: 480px;
+    max-width: 92vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 40px;
+    z-index: 401;
+}
+
+#editProfileClose {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    color: #888;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+#editProfileClose:hover { color: #c9a84c; }
+#editProfileModalTitle { font-size: 18px; color: #f0f0f0; letter-spacing: 2px; margin-bottom: 25px; text-transform: uppercase; }
+.editProfileLabel { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #888; margin-bottom: 10px; }
+
+#editCoverDropzone {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    border: 2px dashed #333;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 22px;
+    transition: border-color 0.2s;
+}
+
+#editCoverDropzone:hover { border-color: #c9a84c; }
+#editCoverPreview { width: 100%; height: 100%; object-fit: cover; }
+
+#editCoverPlaceholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #555;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+#editCoverPlaceholder i { font-size: 28px; }
+
+#editAvatarRow { display: flex; align-items: center; gap: 15px; margin-bottom: 22px; }
+
+#editAvatarPreviewBox {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #c9a84c;
+    cursor: pointer;
+    flex-shrink: 0;
+    background-color: #111;
+    position: relative;
+}
+
+#editAvatarPreview { width: 100%; height: 100%; object-fit: cover; }
+#editAvatarPlaceholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #c9a84c; font-size: 24px; }
+#editAvatarHint { font-size: 12px; color: #888; letter-spacing: 1px; cursor: pointer; transition: color 0.2s; }
+#editAvatarHint:hover { color: #c9a84c; }
+
+#editBioInput {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #333;
+    border-radius: 12px;
+    color: #f0f0f0;
+    font-family: comfortaa;
+    font-size: 14px;
+    padding: 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 90px;
+    transition: border-color 0.2s;
+    margin-bottom: 25px;
+}
+
+#editBioInput:focus { border-color: #c9a84c; }
+#editBioInput::placeholder { color: #555; }
+
+#editProfileSaveBtn {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid #c9a84c;
+    color: #c9a84c;
+    font-family: comfortaa;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#editProfileSaveBtn:hover { background-color: #c9a84c; color: #0a0a0a; }
+
+/* ─── PHOTO DETAIL META + DELETE ──────────────────────────────────────────── */
+
+#photoDetailDeleteBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #888;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+    margin-left: auto;
+}
+
+#photoDetailDeleteBtn:hover { color: #e74c3c; }
+#photoDetailDeleteBtn.hidden { display: none; }
+
+#photoDetailMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 4px 0;
+}
+
+.photoDetailPhotographer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.photoDetailAvatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid #c9a84c;
+    flex-shrink: 0;
+    background-color: #111;
+}
+
+.photoDetailAvatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.photoDetailAvatarPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c9a84c;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.photoDetailPhotographerInfo { display: flex; flex-direction: column; gap: 2px; }
+.photoDetailPhotographerLabel { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #555; }
+.photoDetailPhotographerName { font-size: 14px; color: #f0f0f0; letter-spacing: 0.5px; }
+
+.photoDetailMetaRows { display: flex; flex-direction: column; gap: 8px; }
+.photoDetailMetaRow { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #888; }
+.photoDetailMetaRow i { color: #c9a84c; font-size: 13px; width: 16px; text-align: center; }
+
+.photoDetailTags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.photoDetailTag {
+    padding: 5px 12px;
+    border: 1px solid #333;
+    border-radius: 15px;
+    font-size: 11px;
+    color: #aaa;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+    #profileSection, #contentSection, #footerInner { width: 90vw; }
+    .previewGrid, .collectionGrid, #sectionOverlayGrid, #collectionOverlayGrid { grid-template-columns: repeat(2, 1fr); }
+    .visitedPreviewGrid { grid-template-columns: repeat(2, 1fr); }
+    #photoDetailContent { grid-template-columns: 1fr; height: auto; }
+    #photoDetailBox { width: 92vw; max-height: 90vh; overflow-y: auto; }
+    #photoDetailImg { height: 40vh; border-radius: 20px 20px 0 0; }
+    #photoDetailRight { padding: 25px; }
+    #sectionOverlayBox, #collectionOverlayBox { width: 92vw; padding: 30px 20px; }
+}
+
+@media (max-width: 600px) {
+    #navbar { padding: 15px 5vw; }
+    #coverSection { height: 25vh; }
+    #profileHeader { flex-direction: column; align-items: center; text-align: center; margin-top: -50px; gap: 15px; }
+    #profileInfo { padding-bottom: 0; }
+    #editProfileBtn { margin: 5px auto 0 auto; align-self: center; }
+    #statsBar { flex-wrap: wrap; gap: 12px; margin-bottom: 40px; }
+    .statBox { flex: 1 1 40%; padding: 16px; }
+    .statValue { font-size: 22px; }
+    #profileUsername { font-size: 22px; }
+    #avatarBox { width: 100px; height: 100px; }
+    .previewGrid.hasMore { max-height: 360px; }
+    #contentSection { gap: 45px; }
+    #editProfileBox { padding: 30px 22px; }
+}

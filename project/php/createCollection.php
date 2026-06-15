@@ -2,9 +2,14 @@
     session_start();
     require_once "mysql.php";
 
-    $user_id = $_SESSION['user_id'];
+    $user_id = $_SESSION['user_id'] ?? 0;
     $name = $_POST['name'] ?? '';
     $description = $_POST['description'] ?? '';
+
+    if ($user_id === 0 || $name === '') {
+        echo json_encode(["status" => "error"]);
+        exit;
+    }
 
     $stmt = $conn->prepare("INSERT INTO collections (user_id, name, description) VALUES (?, ?, ?)");
     $stmt->bind_param("iss", $user_id, $name, $description);

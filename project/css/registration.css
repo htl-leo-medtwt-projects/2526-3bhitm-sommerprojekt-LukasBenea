@@ -201,3 +201,11 @@ body {
 #bottomText a:hover {
     opacity: 0.7;
 }
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+    #logoLink { top: 20px; left: 20px; font-size: 18px; }
+    #photoCard { width: 90vw; padding: 25px 22px; transform: rotate(0deg); }
+    #klebeband { width: 100px; top: -50px; }
+}

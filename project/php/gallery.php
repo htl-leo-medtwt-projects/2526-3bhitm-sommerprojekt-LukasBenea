@@ -12,6 +12,7 @@
 
     $likedPhotoIds = [];
     $savedPhotoIds = [];
+    $navProfilbild = '';
     if ($user_id > 0) {
         $stmtL = $conn->prepare("SELECT photo_id FROM likes WHERE user_id = ?");
         $stmtL->bind_param("i", $user_id);
@@ -26,9 +27,19 @@
         foreach (mysqli_fetch_all($stmtS->get_result(), MYSQLI_ASSOC) as $row) {
             $savedPhotoIds[] = $row['photo_id'];
         }
+
+        $stmtU = $conn->prepare("SELECT profilbild FROM users WHERE id = ?");
+        $stmtU->bind_param("i", $user_id);
+        $stmtU->execute();
+        $uRow = $stmtU->get_result()->fetch_assoc();
+        $navProfilbild = $uRow['profilbild'] ?? '';
     }
 
     $conn->close();
+
+    $navAvatar = !empty($navProfilbild)
+        ? '<img class="navAvatarImg" src="../images/' . $navProfilbild . '" alt="account">'
+        : '<img src="../images/account_Icon.png" alt="account">';
 
     $cityCards = "";
     foreach ($cities as $city) {
@@ -81,7 +92,7 @@
             <div id="navRight">
                 <a href="index.php" id="navHome">Home</a>
                 <a href="profile.php" id="navProfile">
-                    <img src="../images/account_Icon.png" alt="account">
+                    <?php echo $navAvatar; ?>
                 </a>
                 <a href="logout.php" id="navLogout">Logout</a>
             </div>
@@ -161,9 +172,15 @@
                 <div id="photosView" class="hidden">
                     <div id="photosTopBar">
                         <input type="text" id="photoSearchInput" placeholder="Search photos...">
-                        <div id="tagsBar">
-                            <span class="tagBtn active" data-tag="">All</span>
-                            <?php echo $tagButtons; ?>
+                        <div id="photosFilterRow">
+                            <div id="tagsBar">
+                                <span class="tagBtn active" data-tag="">All</span>
+                                <?php echo $tagButtons; ?>
+                            </div>
+                            <div id="sortBar">
+                                <span class="sortBtn active" data-sort="popular">Popular</span>
+                                <span class="sortBtn" data-sort="newest">Newest</span>
+                            </div>
                         </div>
                     </div>
                     <div id="photosGrid"></div>
@@ -184,7 +201,7 @@
                 <?php echo $user_id > 0 ? '<a href="profile.php">Profile</a>' : ''; ?>
                 <?php echo $user_id > 0 ? '<a href="logout.php">Logout</a>' : '<a href="registration.php">Login</a>'; ?>
             </div>
-            <p id="footerCopy">© 2025 Scenery. All rights reserved.</p>
+            <p id="footerCopy">© 2026 Scenery. All rights reserved.</p>
         </div>
     </footer>
 
@@ -192,27 +209,32 @@
         <div id="galleryPhotoOverlay" onclick="closeGalleryPhotoModal()"></div>
         <div id="galleryPhotoBox">
             <span id="galleryPhotoClose" onclick="closeGalleryPhotoModal()">✕</span>
+            <div class="photoNavBtn photoNavPrev" onclick="navGalleryModal(-1)"><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="photoNavBtn photoNavNext" onclick="navGalleryModal(1)"><i class="fa-solid fa-chevron-right"></i></div>
             <div id="galleryPhotoContent">
                 <div id="galleryPhotoLeft">
                     <img id="galleryModalImg" src="" alt="">
                 </div>
                 <div id="galleryPhotoRight">
-                    <p id="galleryModalCity"></p>
-                    <h2 id="galleryModalTitle"></h2>
-                    <p id="galleryModalDesc"></p>
-                    <p id="galleryModalLikes"></p>
-                    <div id="galleryModalActions">
-                        <div id="galleryModalLikeBtn" onclick="toggleGalleryLike()">
-                            <i id="galleryModalLikeIcon" class="fa-regular fa-heart"></i>
-                            <span id="galleryModalLikeText">Like</span>
-                        </div>
-                        <?php if ($user_id > 0) { ?>
-                            <div id="galleryModalBookmarkBtn" onclick="openGalleryCollectionModal()">
-                                <i id="galleryModalBookmarkIcon" class="fa-regular fa-bookmark"></i>
-                                <span id="galleryModalBookmarkText">Save</span>
+                    <div class="pmHeader">
+                        <p id="galleryModalCity"></p>
+                        <h2 id="galleryModalTitle"></h2>
+                        <p id="galleryModalDesc"></p>
+                        <p id="galleryModalLikes"></p>
+                        <div id="galleryModalActions">
+                            <div id="galleryModalLikeBtn" onclick="toggleGalleryLike()">
+                                <i id="galleryModalLikeIcon" class="fa-regular fa-heart"></i>
+                                <span id="galleryModalLikeText">Like</span>
                             </div>
-                        <?php } ?>
+                            <?php if ($user_id > 0) { ?>
+                                <div id="galleryModalBookmarkBtn" onclick="openGalleryCollectionModal()">
+                                    <i id="galleryModalBookmarkIcon" class="fa-regular fa-bookmark"></i>
+                                    <span id="galleryModalBookmarkText">Save</span>
+                                </div>
+                            <?php } ?>
+                        </div>
                     </div>
+                    <div id="galleryModalMeta"></div>
                     <div id="galleryModalExif"></div>
                 </div>
             </div>
@@ -297,6 +319,7 @@
         <?php echo 'const cities = ' . $citiesJson . ';'; ?>
         <?php echo 'let likedPhotos = ' . $likedJson . ';'; ?>
         <?php echo 'let savedPhotos = ' . $savedJson . ';'; ?>
+        <?php echo 'const isLoggedIn = ' . ($user_id > 0 ? 'true' : 'false') . ';'; ?>
     </script>
 
 </body>

@@ -2,10 +2,15 @@
     session_start();
     require_once "mysql.php";
 
-    $user_id = $_SESSION['user_id'];
+    $user_id = $_SESSION['user_id'] ?? 0;
     $photo_id = $_POST['photo_id'] ?? 0;
     $collection_id = $_POST['collection_id'] ?? 0;
     $remove_all = $_POST['remove_all'] ?? 0;
+
+    if ($user_id === 0) {
+        echo json_encode(["status" => "error"]);
+        exit;
+    }
 
     if ($remove_all) {
         $stmt = $conn->prepare("SELECT cp.collection_id FROM collection_photos cp JOIN collections c ON cp.collection_id = c.id WHERE cp.photo_id = ? AND c.user_id = ?");

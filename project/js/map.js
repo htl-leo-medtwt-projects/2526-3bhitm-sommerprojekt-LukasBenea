@@ -17,25 +17,40 @@ fetch('../php/getCityVisits.php')
             if (!city.latitude || !city.longitude) return;
 
             var count = parseInt(city.visit_count);
-            var radius = count > 0 ? 5 + (count * 0.3) : 5;
-            var color = count > 0 ? '#c9a84c' : '#444';
-            var fillOpacity = count > 0 ? 0.8 : 0.3;
+            var visited = count > 0;
+            var size = visited ? Math.min(16 + count * 2, 34) : 12;
+            var cls = visited ? 'mapMarker mapMarkerActive' : 'mapMarker';
 
-            var circle = L.circleMarker([city.latitude, city.longitude], {
-                radius: radius,
-                fillColor: color,
-                color: color,
-                weight: 1,
-                fillOpacity: fillOpacity
+            var icon = L.divIcon({
+                className: 'mapMarkerWrap',
+                html: '<div class="' + cls + '" style="width:' + size + 'px;height:' + size + 'px;"><span class="mapMarkerDot"></span></div>',
+                iconSize: [size, size],
+                iconAnchor: [size / 2, size / 2]
+            });
+
+            var marker = L.marker([city.latitude, city.longitude], {
+                icon: icon,
+                keyboard: false,
+                riseOnHover: true
             }).addTo(map);
 
-            circle.bindPopup(
-                '<div style="font-family: comfortaa; color: #f0f0f0; background: #1a1a1a; padding: 12px 14px; border-radius: 10px; min-width: 130px;">' +
-                '<b style="letter-spacing: 2px; font-size: 14px;">' + city.name + '</b><br>' +
-                '<span style="color: #c9a84c; font-size: 12px;">' + count + ' visit' + (count !== 1 ? 's' : '') + '</span><br><br>' +
-                '<a href="city.php?id=' + city.id + '" style="display:inline-block; padding: 6px 12px; background: #c9a84c; color: #0a0a0a; border-radius: 20px; font-size: 11px; letter-spacing: 1.5px; text-decoration: none; text-transform: uppercase;">View City</a>' +
-                '</div>'
+            marker.bindPopup(
+                '<div class="mapPopup">' +
+                '<p class="mapPopupCity">' + city.name + '</p>' +
+                '<p class="mapPopupVisits">' + count + ' visit' + (count !== 1 ? 's' : '') + '</p>' +
+                '<a class="mapPopupBtn" href="city.php?id=' + city.id + '">View City</a>' +
+                '</div>',
+                { autoPan: true, autoPanPadding: [40, 60], closeButton: true }
             );
+        });
+
+        map.on('popupopen', function(e) {
+            if (e.popup && e.popup._closeButton && e.popup._closeButton.blur) {
+                e.popup._closeButton.blur();
+            }
+            if (document.activeElement && document.activeElement.blur) {
+                document.activeElement.blur();
+            }
         });
 
     });

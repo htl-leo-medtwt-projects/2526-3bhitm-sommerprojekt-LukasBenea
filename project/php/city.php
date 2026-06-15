@@ -11,7 +11,7 @@
     $result = $stmt->get_result();
     $city = $result->fetch_assoc();
 
-    $stmt2 = $conn->prepare("SELECT * FROM photos WHERE city_id = ?");
+    $stmt2 = $conn->prepare("SELECT photos.*, cities.name AS city_name, users.username AS photographer, users.profilbild AS photographer_avatar, (SELECT GROUP_CONCAT(DISTINCT t.name SEPARATOR ',') FROM photo_tags pt JOIN tags t ON pt.tag_id = t.id WHERE pt.photo_id = photos.id) AS tags FROM photos LEFT JOIN cities ON photos.city_id = cities.id LEFT JOIN users ON photos.user_id = users.id WHERE photos.city_id = ?");
     $stmt2->bind_param("i", $city_id);
     $stmt2->execute();
     $result2 = $stmt2->get_result();
@@ -40,6 +40,7 @@
     }
 
     $isVisited = false;
+    $navProfilbild = '';
     if ($user_id > 0) {
         $stmt5 = $conn->prepare("SELECT id FROM visited_cities WHERE user_id = ? AND city_id = ?");
         $stmt5->bind_param("ii", $user_id, $city_id);
@@ -47,9 +48,19 @@
         if ($stmt5->get_result()->fetch_assoc()) {
             $isVisited = true;
         }
+
+        $stmtU = $conn->prepare("SELECT profilbild FROM users WHERE id = ?");
+        $stmtU->bind_param("i", $user_id);
+        $stmtU->execute();
+        $uRow = $stmtU->get_result()->fetch_assoc();
+        $navProfilbild = $uRow['profilbild'] ?? '';
     }
 
     $conn->close();
+
+    $navAvatar = !empty($navProfilbild)
+        ? '<img class="navAvatarImg" src="../images/' . $navProfilbild . '" alt="account">'
+        : '<img src="../images/account_Icon.png" alt="account">';
 
     $heroImg = !empty($city['hero_image'])
         ? '<img src="../images/' . $city['hero_image'] . '" alt="' . $city['name'] . '">'
@@ -129,7 +140,7 @@
                 <a href="javascript:history.back()" id="navBack">Back</a>
                 <?php if ($user_id > 0) { ?>
                     <a href="profile.php" id="navProfile">
-                        <img src="../images/account_Icon.png" alt="account">
+                        <?php echo $navAvatar; ?>
                     </a>
                     <a href="logout.php" id="navLogout">Logout</a>
                 <?php } else { ?>
@@ -181,7 +192,7 @@
                 <a href="profile.php">Profile</a>
                 <a href="logout.php">Logout</a>
             </div>
-            <p id="footerCopy">© 2025 Scenery. All rights reserved.</p>
+            <p id="footerCopy">© 2026 Scenery. All rights reserved.</p>
         </div>
     </footer>
 
@@ -189,24 +200,29 @@
         <div id="modalOverlay" onclick="closeModal()"></div>
         <div id="modalBox">
             <span id="modalClose" onclick="closeModal()">✕</span>
+            <div class="photoNavBtn photoNavPrev" onclick="navCityModal(-1)"><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="photoNavBtn photoNavNext" onclick="navCityModal(1)"><i class="fa-solid fa-chevron-right"></i></div>
             <div id="modalContent">
                 <div id="modalLeft">
                     <img id="modalImg" src="" alt="">
                 </div>
                 <div id="modalRight">
-                    <h2 id="modalTitle"></h2>
-                    <p id="modalDesc"></p>
-                    <p id="modalTags"></p>
-                    <div id="modalActions">
-                        <div id="modalLikeBtn" onclick="toggleLikeModal(this)">
-                            <i id="modalLikeIcon" class="fa-regular fa-heart"></i>
-                            <span id="modalLikeText">Like</span>
-                        </div>
-                        <div id="modalBookmarkBtn" onclick="handleModalBookmark()">
-                            <i id="modalBookmarkIcon" class="fa-regular fa-bookmark"></i>
-                            <span id="modalBookmarkText">Save</span>
+                    <div class="pmHeader">
+                        <p id="modalCity" class="pmCity"></p>
+                        <h2 id="modalTitle"></h2>
+                        <p id="modalDesc"></p>
+                        <div id="modalActions">
+                            <div id="modalLikeBtn" onclick="toggleLikeModal(this)">
+                                <i id="modalLikeIcon" class="fa-regular fa-heart"></i>
+                                <span id="modalLikeText">Like</span>
+                            </div>
+                            <div id="modalBookmarkBtn" onclick="handleModalBookmark()">
+                                <i id="modalBookmarkIcon" class="fa-regular fa-bookmark"></i>
+                                <span id="modalBookmarkText">Save</span>
+                            </div>
                         </div>
                     </div>
+                    <div id="modalMeta"></div>
                     <div id="modalExif">
                         <p class="exifRow" id="exifCamera"></p>
                         <p class="exifRow" id="exifFocal"></p>
@@ -254,6 +270,7 @@
         <?php echo 'const photos = ' . $photosJson . ';'; ?>
         <?php echo 'let likedPhotos = ' . $likedJson . ';'; ?>
         <?php echo 'let savedPhotos = ' . $savedJson . ';'; ?>
+        <?php echo 'const isLoggedIn = ' . ($user_id > 0 ? 'true' : 'false') . ';'; ?>
     </script>
 
 </body>

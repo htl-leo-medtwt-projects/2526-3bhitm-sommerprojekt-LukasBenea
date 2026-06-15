@@ -9,12 +9,12 @@
     $stmt->execute();
     $user = $stmt->get_result()->fetch_assoc();
 
-    $stmt2 = $conn->prepare("SELECT * FROM photos WHERE user_id = ?");
+    $stmt2 = $conn->prepare("SELECT photos.*, cities.name AS city_name, users.username AS photographer, users.profilbild AS photographer_avatar, (SELECT GROUP_CONCAT(DISTINCT t.name SEPARATOR ',') FROM photo_tags pt JOIN tags t ON pt.tag_id = t.id WHERE pt.photo_id = photos.id) AS tags FROM photos LEFT JOIN cities ON photos.city_id = cities.id LEFT JOIN users ON photos.user_id = users.id WHERE photos.user_id = ?");
     $stmt2->bind_param("i", $user_id);
     $stmt2->execute();
     $photos = mysqli_fetch_all($stmt2->get_result(), MYSQLI_ASSOC);
 
-    $stmt3 = $conn->prepare("SELECT * FROM collections WHERE user_id = ?");
+    $stmt3 = $conn->prepare("SELECT collections.*, (SELECT photos.image_path FROM collection_photos JOIN photos ON photos.id = collection_photos.photo_id WHERE collection_photos.collection_id = collections.id ORDER BY collection_photos.id ASC LIMIT 1) AS cover_image FROM collections WHERE user_id = ?");
     $stmt3->bind_param("i", $user_id);
     $stmt3->execute();
     $collections = mysqli_fetch_all($stmt3->get_result(), MYSQLI_ASSOC);
@@ -29,7 +29,7 @@
     $stmt5->execute();
     $likesData = $stmt5->get_result()->fetch_assoc();
 
-    $stmt6 = $conn->prepare("SELECT photos.* FROM photos JOIN likes ON photos.id = likes.photo_id WHERE likes.user_id = ?");
+    $stmt6 = $conn->prepare("SELECT photos.*, cities.name AS city_name, users.username AS photographer, users.profilbild AS photographer_avatar, (SELECT GROUP_CONCAT(DISTINCT t.name SEPARATOR ',') FROM photo_tags pt JOIN tags t ON pt.tag_id = t.id WHERE pt.photo_id = photos.id) AS tags FROM photos JOIN likes ON photos.id = likes.photo_id LEFT JOIN cities ON photos.city_id = cities.id LEFT JOIN users ON photos.user_id = users.id WHERE likes.user_id = ?");
     $stmt6->bind_param("i", $user_id);
     $stmt6->execute();
     $likedPhotos = mysqli_fetch_all($stmt6->get_result(), MYSQLI_ASSOC);
@@ -83,10 +83,13 @@
     $photoCards = "";
     foreach ($photos as $photo) {
         $photoCards .= '
-            <div class="photoCard" onclick="openPhotoDetailById(' . $photo['id'] . ', photos)">
+            <div class="photoCard" data-photo-id="' . $photo['id'] . '" onclick="openPhotoDetailById(' . $photo['id'] . ', photos)">
                 <img src="../images/' . $photo['image_path'] . '" alt="' . $photo['title'] . '">
                 <div class="photoOverlay">
                     <p class="photoTitle">' . $photo['title'] . '</p>
+                </div>
+                <div class="deletePhotoBtn" onclick="askDeletePhoto(event, ' . $photo['id'] . ')">
+                    <i class="fa-regular fa-trash-can"></i>
                 </div>
             </div>
         ';
@@ -119,12 +122,24 @@
 
     $collectionCards = "";
     foreach ($collections as $collection) {
+        $cover = !empty($collection['cover_image'])
+            ? '<img src="../images/' . $collection['cover_image'] . '" alt="' . $collection['name'] . '">'
+            : '<div class="collectionCoverEmpty"><i class="fa-regular fa-images"></i></div>';
+
         $collectionCards .= '
-            <div class="collectionCard" onclick="openCollectionOverlay(' . $collection['id'] . ')">
-                <p class="collectionName">' . $collection['name'] . '</p>
-                <p class="collectionDesc">' . $collection['description'] . '</p>
-                <div class="deleteCollectionBtn" onclick="deleteCollection(event, ' . $collection['id'] . ')">
-                    <i class="fa-regular fa-trash-can"></i>
+            <div class="collectionCard" data-id="' . $collection['id'] . '" onclick="openCollectionOverlay(' . $collection['id'] . ')">
+                <div class="collectionCover">' . $cover . '</div>
+                <div class="collectionCardBody">
+                    <p class="collectionName">' . $collection['name'] . '</p>
+                    <p class="collectionDesc">' . $collection['description'] . '</p>
+                </div>
+                <div class="collectionCardBtns">
+                    <div class="editCollectionBtn" onclick="openEditCollection(event, ' . $collection['id'] . ')">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </div>
+                    <div class="deleteCollectionBtn" onclick="deleteCollection(event, ' . $collection['id'] . ')">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </div>
                 </div>
             </div>
         ';
@@ -199,6 +214,10 @@
                     <p id="profileBio"><?php echo $bioText; ?></p>
                     <p id="profileJoined">Member since <?php echo $joinedDate; ?></p>
                 </div>
+                <div id="editProfileBtn" onclick="openEditProfile()">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                    <span>Edit Profile</span>
+                </div>
             </div>
             <div id="statsBar">
                 <?php echo $statsHtml; ?>
@@ -240,7 +259,7 @@
                 <a href="profile.php">Profile</a>
                 <a href="logout.php">Logout</a>
             </div>
-            <p id="footerCopy">© 2025 Scenery. All rights reserved.</p>
+            <p id="footerCopy">© 2026 Scenery. All rights reserved.</p>
         </div>
     </footer>
 
@@ -266,23 +285,33 @@
         <div id="photoDetailOverlay" onclick="closePhotoDetail()"></div>
         <div id="photoDetailBox">
             <span id="photoDetailClose" onclick="closePhotoDetail()">✕</span>
+            <div class="photoNavBtn photoNavPrev" onclick="navDetailModal(-1)"><i class="fa-solid fa-chevron-left"></i></div>
+            <div class="photoNavBtn photoNavNext" onclick="navDetailModal(1)"><i class="fa-solid fa-chevron-right"></i></div>
             <div id="photoDetailContent">
                 <div id="photoDetailLeft">
                     <img id="photoDetailImg" src="" alt="">
                 </div>
                 <div id="photoDetailRight">
-                    <h2 id="photoDetailTitle"></h2>
-                    <p id="photoDetailDesc"></p>
-                    <div id="photoDetailActions">
-                        <div id="photoDetailLikeBtn" onclick="toggleLikeDetail()">
-                            <i id="photoDetailLikeIcon" class="fa-regular fa-heart"></i>
-                            <span id="photoDetailLikeText">Like</span>
-                        </div>
-                        <div id="photoDetailBookmarkBtn" onclick="handlePhotoDetailBookmark()">
-                            <i id="photoDetailBookmarkIcon" class="fa-regular fa-bookmark"></i>
-                            <span>Collections</span>
+                    <div class="pmHeader">
+                        <p id="photoDetailCity" class="pmCity"></p>
+                        <h2 id="photoDetailTitle"></h2>
+                        <p id="photoDetailDesc"></p>
+                        <div id="photoDetailActions">
+                            <div id="photoDetailLikeBtn" onclick="toggleLikeDetail()">
+                                <i id="photoDetailLikeIcon" class="fa-regular fa-heart"></i>
+                                <span id="photoDetailLikeText">Like</span>
+                            </div>
+                            <div id="photoDetailBookmarkBtn" onclick="handlePhotoDetailBookmark()">
+                                <i id="photoDetailBookmarkIcon" class="fa-regular fa-bookmark"></i>
+                                <span>Collections</span>
+                            </div>
+                            <div id="photoDetailDeleteBtn" class="hidden" onclick="askDeletePhoto(event, currentDetailPhotoId)">
+                                <i class="fa-regular fa-trash-can"></i>
+                                <span>Delete</span>
+                            </div>
                         </div>
                     </div>
+                    <div id="photoDetailMeta"></div>
                     <div id="photoDetailExif"></div>
                 </div>
             </div>
@@ -330,11 +359,69 @@
         </div>
     </div>
 
+    <div id="deletePhotoModal" class="hidden">
+        <div id="deletePhotoOverlay" onclick="closeDeletePhotoModal()"></div>
+        <div id="deletePhotoBox">
+            <h2 id="deletePhotoTitle">Delete Photo?</h2>
+            <p id="deletePhotoText">This photo will be permanently removed. This cannot be undone.</p>
+            <div id="deletePhotoBtns">
+                <div id="deletePhotoCancelBtn" onclick="closeDeletePhotoModal()">Cancel</div>
+                <div id="deletePhotoConfirmBtn" onclick="confirmDeletePhoto()">Delete</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editCollectionModal" class="hidden">
+        <div id="editCollectionOverlay" onclick="closeEditCollection()"></div>
+        <div id="editCollectionBox">
+            <span id="editCollectionClose" onclick="closeEditCollection()">✕</span>
+            <h2 id="editCollectionTitle">Edit Collection</h2>
+            <input type="text" id="editCollectionName" placeholder="Collection name">
+            <input type="text" id="editCollectionDesc" placeholder="Description (optional)">
+            <button id="editCollectionSaveBtn" onclick="submitEditCollection()">Save</button>
+        </div>
+    </div>
+
+    <div id="editProfileModal" class="hidden">
+        <div id="editProfileOverlay" onclick="closeEditProfile()"></div>
+        <div id="editProfileBox">
+            <span id="editProfileClose" onclick="closeEditProfile()">✕</span>
+            <h2 id="editProfileModalTitle">Edit Profile</h2>
+
+            <p class="editProfileLabel">Cover Image</p>
+            <div id="editCoverDropzone" onclick="document.getElementById('editCoverInput').click()">
+                <img id="editCoverPreview" src="" alt="" class="hidden">
+                <div id="editCoverPlaceholder"><i class="fa-solid fa-image"></i><span>Click to upload cover</span></div>
+                <input type="file" id="editCoverInput" accept="image/*" style="display:none">
+            </div>
+
+            <p class="editProfileLabel">Avatar</p>
+            <div id="editAvatarRow">
+                <div id="editAvatarPreviewBox" onclick="document.getElementById('editAvatarInput').click()">
+                    <img id="editAvatarPreview" src="" alt="" class="hidden">
+                    <div id="editAvatarPlaceholder"><i class="fa-solid fa-user"></i></div>
+                </div>
+                <span id="editAvatarHint" onclick="document.getElementById('editAvatarInput').click()">Click to change avatar</span>
+                <input type="file" id="editAvatarInput" accept="image/*" style="display:none">
+            </div>
+
+            <p class="editProfileLabel">Bio</p>
+            <textarea id="editBioInput" placeholder="Tell something about yourself..." maxlength="200"></textarea>
+
+            <button id="editProfileSaveBtn" onclick="submitEditProfile()">Save Changes</button>
+        </div>
+    </div>
+
     <script>
         <?php echo 'const photos = ' . $photosJson . ';'; ?>
         <?php echo 'const likedPhotosData = ' . $likedPhotosJson . ';'; ?>
         <?php echo 'const visitedCitiesData = ' . $visitedJson . ';'; ?>
         <?php echo 'let savedPhotos = ' . $savedJson . ';'; ?>
+        <?php echo 'const isLoggedIn = true;'; ?>
+        <?php echo 'const currentUserId = ' . (int)$user_id . ';'; ?>
+        <?php echo 'const userBio = ' . json_encode($user['bio'] ?? '') . ';'; ?>
+        <?php echo 'const userAvatar = ' . json_encode($user['profilbild'] ?? '') . ';'; ?>
+        <?php echo 'const userCover = ' . json_encode($user['cover_image'] ?? '') . ';'; ?>
     </script>
 
 </body>

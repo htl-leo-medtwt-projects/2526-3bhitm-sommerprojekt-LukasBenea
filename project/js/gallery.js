@@ -2,9 +2,11 @@
 
 let currentView = 'cities';
 let currentTag = '';
+let currentSort = 'popular';
 let photoSearchTimeout = null;
 let galleryMsnry = null;
 let currentGalleryPhoto = null;
+let galleryPhotosList = [];
 
 function switchView(view) {
     currentView = view;
@@ -28,11 +30,13 @@ function switchView(view) {
 }
 
 function loadGalleryPhotos(search, tag) {
-    let url = '../php/getPhotos.php?search=' + encodeURIComponent(search) + '&tag=' + encodeURIComponent(tag);
+    let grid = document.getElementById('photosGrid');
+    grid.innerHTML = '<div class="galleryLoader"><div class="gallerySpinner"></div></div>';
+    let url = '../php/getPhotos.php?search=' + encodeURIComponent(search) + '&tag=' + encodeURIComponent(tag) + '&sort=' + encodeURIComponent(currentSort);
     fetch(url)
         .then(function(response) { return response.json(); })
         .then(function(photos) {
-            let grid = document.getElementById('photosGrid');
+            galleryPhotosList = photos;
             grid.innerHTML = '';
 
             if (photos.length === 0) {
@@ -43,11 +47,20 @@ function loadGalleryPhotos(search, tag) {
             photos.forEach(function(photo) {
                 let div = document.createElement('div');
                 div.className = 'galleryPhotoCard';
+                div.setAttribute('data-photo-id', photo.id);
+                let likedClass = (typeof likedPhotos !== 'undefined' && likedPhotos.includes(parseInt(photo.id)))
+                    ? 'fa-solid fa-heart liked'
+                    : 'fa-regular fa-heart';
                 div.innerHTML = `
                     <img src="../images/${photo.image_path}" alt="${photo.title}">
                     <div class="galleryPhotoLikes">
                         <i class="fa-solid fa-heart"></i>
                         <span>${photo.like_count}</span>
+                    </div>
+                    <div class="cardBtns">
+                        <div class="likeBtn" onclick="toggleGalleryCardLike(event, ${photo.id}, this)">
+                            <i class="${likedClass}"></i>
+                        </div>
                     </div>
                     <div class="galleryPhotoOverlay">
                         <p class="galleryPhotoTitle">${photo.title}</p>
@@ -108,7 +121,57 @@ function openGalleryPhotoModal(photo) {
     }
     document.getElementById('galleryModalExif').innerHTML = exifHtml;
 
+    renderGalleryMeta(photo);
+    updateGalleryModalNav();
+
     document.getElementById('galleryPhotoModal').classList.remove('hidden');
+}
+
+function renderGalleryMeta(photo) {
+    let meta = document.getElementById('galleryModalMeta');
+    if (!meta) return;
+    let html = '';
+
+    if (photo.photographer) {
+        let avatar = photo.photographer_avatar
+            ? '<img src="../images/' + photo.photographer_avatar + '" alt="' + photo.photographer + '">'
+            : '<div class="galleryMetaAvatarPlaceholder">' + photo.photographer.charAt(0).toUpperCase() + '</div>';
+        html += '<div class="galleryMetaPhotographer">'
+            + '<div class="galleryMetaAvatar">' + avatar + '</div>'
+            + '<div class="galleryMetaInfo"><span class="galleryMetaLabel">Photographer</span><span class="galleryMetaName">' + photo.photographer + '</span></div>'
+            + '</div>';
+    }
+
+    let dateText = photo.year_taken || (photo.created_at ? photo.created_at.substring(0, 10) : '');
+    if (dateText) {
+        html += '<div class="galleryMetaRow"><i class="fa-regular fa-calendar"></i><span>' + dateText + '</span></div>';
+    }
+
+    if (photo.tags) {
+        let chips = photo.tags.split(',').map(function(t) {
+            return '<span class="galleryMetaTag">' + t + '</span>';
+        }).join('');
+        html += '<div class="galleryMetaTags">' + chips + '</div>';
+    }
+
+    meta.innerHTML = html;
+}
+
+function updateGalleryModalNav() {
+    let prev = document.querySelector('#galleryPhotoBox .photoNavPrev');
+    let next = document.querySelector('#galleryPhotoBox .photoNavNext');
+    if (!prev || !next) return;
+    let show = galleryPhotosList.length > 1;
+    prev.classList.toggle('hidden', !show);
+    next.classList.toggle('hidden', !show);
+}
+
+function navGalleryModal(dir) {
+    if (galleryPhotosList.length <= 1 || !currentGalleryPhoto) return;
+    let idx = galleryPhotosList.findIndex(p => p.id == currentGalleryPhoto.id);
+    if (idx === -1) return;
+    let newIdx = (idx + dir + galleryPhotosList.length) % galleryPhotosList.length;
+    openGalleryPhotoModal(galleryPhotosList[newIdx]);
 }
 
 function closeGalleryPhotoModal() {
@@ -116,8 +179,16 @@ function closeGalleryPhotoModal() {
     currentGalleryPhoto = null;
 }
 
+document.addEventListener('keydown', function(e) {
+    let modal = document.getElementById('galleryPhotoModal');
+    if (!modal || modal.classList.contains('hidden')) return;
+    if (e.key === 'ArrowLeft') navGalleryModal(-1);
+    if (e.key === 'ArrowRight') navGalleryModal(1);
+});
+
 function toggleGalleryLike() {
     if (!currentGalleryPhoto) return;
+    if (!requireLogin()) return;
     fetch('../php/like.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -125,23 +196,69 @@ function toggleGalleryLike() {
     })
     .then(function(response) { return response.json(); })
     .then(function(data) {
+        if (data.status !== 'liked' && data.status !== 'unliked') return;
         let icon = document.getElementById('galleryModalLikeIcon');
         let text = document.getElementById('galleryModalLikeText');
+        let photoId = currentGalleryPhoto.id;
         if (data.status === 'liked') {
             icon.className = 'fa-solid fa-heart liked';
             text.textContent = 'Liked';
             currentGalleryPhoto.like_count++;
+            if (typeof likedPhotos !== 'undefined' && !likedPhotos.includes(parseInt(photoId))) likedPhotos.push(parseInt(photoId));
         } else {
             icon.className = 'fa-regular fa-heart';
             text.textContent = 'Like';
             currentGalleryPhoto.like_count--;
+            if (typeof likedPhotos !== 'undefined') likedPhotos = likedPhotos.filter(id => id != photoId);
         }
         document.getElementById('galleryModalLikes').textContent = currentGalleryPhoto.like_count + ' likes';
+        syncGalleryCardLike(photoId, data.status === 'liked', currentGalleryPhoto.like_count);
     });
+}
+
+function toggleGalleryCardLike(event, photoId, btn) {
+    event.stopPropagation();
+    if (!requireLogin()) return;
+    fetch('../php/like.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'photo_id=' + photoId
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        if (data.status !== 'liked' && data.status !== 'unliked') return;
+        let card = btn.closest('.galleryPhotoCard');
+        let countSpan = card.querySelector('.galleryPhotoLikes span');
+        let count = parseInt(countSpan.textContent) || 0;
+        if (data.status === 'liked') {
+            count++;
+            if (typeof likedPhotos !== 'undefined' && !likedPhotos.includes(parseInt(photoId))) likedPhotos.push(parseInt(photoId));
+        } else {
+            count--;
+            if (typeof likedPhotos !== 'undefined') likedPhotos = likedPhotos.filter(id => id != photoId);
+        }
+        syncGalleryCardLike(photoId, data.status === 'liked', count);
+        if (currentGalleryPhoto && currentGalleryPhoto.id == photoId) {
+            currentGalleryPhoto.like_count = count;
+            document.getElementById('galleryModalLikes').textContent = count + ' likes';
+            document.getElementById('galleryModalLikeIcon').className = data.status === 'liked' ? 'fa-solid fa-heart liked' : 'fa-regular fa-heart';
+            document.getElementById('galleryModalLikeText').textContent = data.status === 'liked' ? 'Liked' : 'Like';
+        }
+    });
+}
+
+function syncGalleryCardLike(photoId, isLiked, count) {
+    let card = document.querySelector('.galleryPhotoCard[data-photo-id="' + photoId + '"]');
+    if (!card) return;
+    let cardIcon = card.querySelector('.likeBtn i');
+    if (cardIcon) cardIcon.className = isLiked ? 'fa-solid fa-heart liked' : 'fa-regular fa-heart';
+    let cardCount = card.querySelector('.galleryPhotoLikes span');
+    if (cardCount) cardCount.textContent = count;
 }
 
 function openGalleryCollectionModal() {
     if (!currentGalleryPhoto) return;
+    if (!requireLogin()) return;
     currentPhotoIdForCollection = currentGalleryPhoto.id;
     currentRemovePhotoId = currentGalleryPhoto.id;
     currentCollectBtn = null;
@@ -163,6 +280,7 @@ let customTagName = '';
 const MAX_TAGS = 5;
 
 function openUploadModal() {
+    if (!requireLogin()) return;
     document.getElementById('uploadModal').classList.remove('hidden');
 }
 
@@ -188,6 +306,7 @@ function closeUploadModal() {
 }
 
 function submitUpload() {
+    if (!requireLogin()) return;
     let title = document.getElementById('uploadTitle_input').value.trim();
     let desc = document.getElementById('uploadDesc').value.trim();
     let cityId = document.getElementById('uploadCityId').value;
@@ -216,13 +335,18 @@ function submitUpload() {
         .then(function(data) {
             btn.textContent = 'Upload';
             btn.disabled = false;
-            if (data.status === 'success') closeUploadModal();
-            else console.error('Upload error:', data.message);
+            if (data.status === 'success') {
+                closeUploadModal();
+                showToast('Photo uploaded');
+                if (currentView === 'photos') loadGalleryPhotos(document.getElementById('photoSearchInput').value, currentTag);
+            } else {
+                showToast('Upload failed', 'error');
+            }
         })
         .catch(function(err) {
             btn.textContent = 'Upload';
             btn.disabled = false;
-            console.error(err);
+            showToast('Upload failed', 'error');
         });
 }
 
@@ -337,6 +461,16 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.tagBtn').forEach(function(b) { b.classList.remove('active'); });
             this.classList.add('active');
             currentTag = this.getAttribute('data-tag');
+            let search = document.getElementById('photoSearchInput') ? document.getElementById('photoSearchInput').value : '';
+            loadGalleryPhotos(search, currentTag);
+        });
+    });
+
+    document.querySelectorAll('.sortBtn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.sortBtn').forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            currentSort = this.getAttribute('data-sort');
             let search = document.getElementById('photoSearchInput') ? document.getElementById('photoSearchInput').value : '';
             loadGalleryPhotos(search, currentTag);
         });

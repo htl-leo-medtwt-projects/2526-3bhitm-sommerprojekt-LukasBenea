@@ -2,8 +2,13 @@
     session_start();
     require_once "mysql.php";
 
-    $user_id = $_SESSION['user_id'];
+    $user_id = $_SESSION['user_id'] ?? 0;
     $action = $_POST['action'] ?? 'add';
+
+    if ($user_id === 0) {
+        echo json_encode(["status" => "error"]);
+        exit;
+    }
 
     if ($action === 'delete') {
         $collection_id = $_POST['collection_id'];
@@ -22,6 +27,15 @@
     } else {
         $photo_id = $_POST['photo_id'] ?? 0;
         $collection_id = $_POST['collection_id'] ?? 0;
+
+        $stmtOwn = $conn->prepare("SELECT id FROM collections WHERE id = ? AND user_id = ?");
+        $stmtOwn->bind_param("ii", $collection_id, $user_id);
+        $stmtOwn->execute();
+        if (!$stmtOwn->get_result()->fetch_assoc()) {
+            echo json_encode(["status" => "error"]);
+            $conn->close();
+            exit;
+        }
 
         $stmt = $conn->prepare("SELECT id FROM collection_photos WHERE collection_id = ? AND photo_id = ?");
         $stmt->bind_param("ii", $collection_id, $photo_id);
